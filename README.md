@@ -1,4 +1,9 @@
-poundation
-==========
+About
+=====
 
-A lightweight PHP foundation framework.
+Poundation is a lightweight PHP framework. It provides a set of foundation classes e.g. String, Sets and so on.
+
+Usage
+=====
+
+Later É
