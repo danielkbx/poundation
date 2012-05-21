@@ -7,15 +7,17 @@ Though all poundation classes declare a namespace 'Poundation' a class Prefex __
 * Knowledge of object-orientated programming
 
 # Installation
-__Method 1__: Place the sources in a directory that is part of your include_path directive, e.g. /usr/share/php on Debian systems.
-__Method 2__: Place the sources in the document root of your projects.
+## Method 1: Shared
+Place the sources in a directory that is part of your include_path directive, e.g. /usr/share/php on Debian systems.
+## Method 2: Project
+Place the sources in the document root of your projects.
 
 Once the source files are at the desired location, include (or require) Poundation.php in your bootstrap file or whereever you wish to use poundation classes.
 
 # Usage
 Poundation classes are normal PHP classes so you can treat them as usual. All classes are subclasses of __PObject__. You can use the same class as superclass for your own classes.
 
-# Collections
+# 1. Collections
 All collection classes hold other values/objects. There work like normal PHP arrays so you can use the array syntax 
 
 	$collection[] = 'some text';
@@ -25,10 +27,12 @@ All collection classes hold other values/objects. There work like normal PHP arr
 
 There are different types of collections:
 
-## PSet
+## 1.1 PSet
 A set can contain a single object only once. In details, adding the same object twice results in adding it only once.
 Sets are numeric, so you cannot add an object with a key.
 
+## 1.2 PArray
+An array holds a number of objects without a key to identify. It is similar to PHP's numeric arrays.
 
-# PString
+# 2. PString
 A string objects wraps a simple native string into a powerful object. It has a bunch of methods to manipulate and alter the string.
