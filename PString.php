@@ -2,23 +2,23 @@
 
 namespace Poundation;
 
-require_once 'Object.php';
+require_once 'PObject.php';
+require_once 'PArray.php';
 
 /**
  * Creates a new Poundation String object.
  * @param string $plainString
- * @return \Poundation\String
+ * @return \Poundation\PString
  */
 function __($plainString='') {
-    return new String($plainString);
+    return new PString($plainString);
 }
 
 /**
- * String manages a string object providing a set of string operations.
- * @abstract This class manages a string value. 
+ * @abstract String manages a string object providing a set of string operations. 
  * @author danielkbx
  */
-class String extends Object {
+class PString extends PObject {
 
 	private $_string='';
 
@@ -33,18 +33,18 @@ class String extends Object {
 	/**
 	 * Creates a new string object with the given String.
 	 * @param $aString
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	static function stringWithString($aString) {
-		if ($aString instanceof String) $aString = $aString->__toString();
-		return new String($aString);
+		if ($aString instanceof PString) $aString = $aString->__toString();
+		return new PString($aString);
 	}
 
 	/**
 	 * Creates a new string from the given array by glueing all elements with the given glue string.
 	 * @param array $array
 	 * @param string $glue
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	static function stringWithArray($array,$glue='') {
 		$str = '';
@@ -76,21 +76,21 @@ class String extends Object {
 	 * Returns a substring beginning at $startPosition with the given $length or to the end, if no length is given.
 	 * @param integer $startPosition
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function substring($startPosition, $length = 0) {
-		if ($this->length() == 0) return String::stringWithString('');
+		if ($this->length() == 0) return PString::stringWithString('');
 		if ($length == 0) {
-			return String::stringWithString(substr($this->_string, $startPosition));
+			return PString::stringWithString(substr($this->_string, $startPosition));
 		} else {
-			return String::stringWithString(substr($this->_string, $startPosition, $length));
+			return PString::stringWithString(substr($this->_string, $startPosition, $length));
 		}
 	}
 
 	/**
 	 * Returns the first character(s) of the string.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function first($length=1) {
 		if ($length == 0) {
@@ -103,7 +103,7 @@ class String extends Object {
 	/**
 	 * Returns the last character(s) of the string.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function last($length=1) {
 		if ($length == 0) {
@@ -115,24 +115,24 @@ class String extends Object {
 
 	/**
 	 * Returns a string without leading and trailing whitespace.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function trim() {
-		return String::stringWithString(trim($this->_string));
+		return PString::stringWithString(trim($this->_string));
 	}
 
 	/**
 	 * Returns a string with all characters being uppercase characters.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function uppercase() {
-		return String::stringWithString(strtoupper($this->_string));
+		return PString::stringWithString(strtoupper($this->_string));
 	}
 
 	/**
 	 * Returns a string where the charater at the given position is converted to uppercase.
 	 * @param integer $position
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function uppercaseAtPosition($position) {
 		$start = $this->first($position);
@@ -144,7 +144,7 @@ class String extends Object {
 	/**
 	 * Returns a string where the charater at the given position is converted to lowercase.
 	 * @param integer $position
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function lowercaseAtPosition($position) {
 		$start = $this->first($position);
@@ -156,7 +156,7 @@ class String extends Object {
 	/**
 	 * Returns the string with the first given number of characters as capitals.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function uppercaseAtBeginning($length=1) {
 		if ($length == 0) {
@@ -164,7 +164,7 @@ class String extends Object {
 			return $this;
 		} elseif ($length == 1) {
 			// default behaviour of PHP so let's use it
-			return String::stringWithString(ucfirst($this->_string));
+			return PString::stringWithString(ucfirst($this->_string));
 		} else {
 			// we uppercase the first characters and append the rest
 			return $this->first($length)->toUppercase()->appendString($this->substring($length));
@@ -174,7 +174,7 @@ class String extends Object {
 	/**
 	 * Returns a string with the given number of characters in lower case.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function lowercaseAtBeginning($length=1) {
 		if ($length == 0) {
@@ -187,29 +187,29 @@ class String extends Object {
 
 	/**
 	 * Returns the string with all characters being lowercase characters.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function lowercase() {
-		return String::stringWithString(strtolower($this->_string));
+		return PString::stringWithString(strtolower($this->_string));
 	}
 
 	/**
 	 * Returns a string where the needle has been replaced with the replacement String.
-	 * @param String $needle
-	 * @param String $replacement
-	 * @return Poundation\String
+	 * @param PString $needle
+	 * @param PString $replacement
+	 * @return Poundation\PString
 	 */
 	public function replace($needle,$replacement='') {
-		return String::stringWithString(str_replace($needle,$replacement,$this->_string));
+		return PString::stringWithString(str_replace($needle,$replacement,$this->_string));
 	}
 
 	/**
 	 * Removes the trailing characters if they match the given the string.
-	 * @param String $char
-	 * @return Poundation\String
+	 * @param PString $char
+	 * @return Poundation\PString
 	 */
 	public function removeTrailingCharactersWhenMatching($char) {
-	if ($char instanceof String) $char = $char->__toString();
+	if ($char instanceof PString) $char = $char->__toString();
 		if (strlen($char)==0) {
 			return $this;
 		} else {
@@ -224,21 +224,21 @@ class String extends Object {
 	/**
 	 * Removes the given number of trailing characters.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function removeTrailingCharacters($length) {
 		if ($length <= $this->length()) {
 			return $this->substring(0,$this->length()-$length);
-		} else return String::stringWithString('');
+		} else return PString::stringWithString('');
 	}
 
 	/**
 	 * Removes the leading characters if they match the given the string.
 	 * @param $char
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function removeLeadingCharactersWhenMatching($char) {
-		if ($char instanceof String) $char = $char->__toString();
+		if ($char instanceof PString) $char = $char->__toString();
 		if (strlen($char)==0) {
 			return $this;
 		} else {
@@ -253,35 +253,35 @@ class String extends Object {
 	/**
 	 * Removes the given number of leading characters.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function removeLeadingCharacters($length) {
 		if ($length <= $this->length()) {
 			return $this->substring($length);
-		} else return String::stringWithString('');
+		} else return PString::stringWithString('');
 	}
 
 	/**
 	 * Returns the string reversed.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function reverse() {
-		return String::stringWithString(strrev($this->_string));
+		return PString::stringWithString(strrev($this->_string));
 	}
 
 	/**
 	 * Returns the string appended with another string.
-	 * @param String $appendix
-	 * @return Poundation\String
+	 * @param PString $appendix
+	 * @return Poundation\PString
 	 */
 	public function appendString($appendix) {
-		return String::stringWithString($this->_string . $appendix);
+		return PString::stringWithString($this->_string . $appendix);
 	}
 
 	/**
 	 * Adds a string to the string.
-	 * @param String $appendix
-	 * @return Poundation\String
+	 * @param PString $appendix
+	 * @return Poundation\PString
 	 */
 	public function addString($appendix) {
 		$this->_string.= (string) $appendix;
@@ -290,24 +290,24 @@ class String extends Object {
 
 	/**
 	 * Returns the string prepended by another string.
-	 * @param String $prefix
-	 * @return Poundation\String
+	 * @param PString $prefix
+	 * @return Poundation\PString
 	 */
 	public function prependString($prefix) {
-		return String::stringWithString($prefix . $this->_string);
+		return PString::stringWithString($prefix . $this->_string);
 	}
 
 	/**
-	 * Splits a string into an array.
-	 * @param String $delimiter
-	 * @return Poundation\String[]
+	 * Splits a string into an array. The returns PArray contains a PString for every compontent.
+	 * @param PString $delimiter
+	 * @return Poundation\PArray
 	 */
 	public function components($delimiter) {
 		$tmpArray = explode($delimiter,$this->_string);
-		$array = array();
+		$array = new PArray();
 		foreach($tmpArray as $component) {
 			if ($component != '') {
-				$array[] = String::stringWithString($component);
+				$array[] = PString::stringWithString($component);
 			}
 		}
 		return $array;
@@ -315,7 +315,7 @@ class String extends Object {
 
 	/**
 	 * Returns true if the string contains the given string.
-	 * @param String $String
+	 * @param PString $String
 	 * @return boolean
 	 */
 	public function contains($string) {
@@ -324,7 +324,7 @@ class String extends Object {
 
 	/**
 	 * Returns the position of the first appearance of the given character.
-	 * @param String $char
+	 * @param PString $char
 	 * @param boolean $caseSensitive
 	 * @param integer $offset
 	 * @return integer
@@ -339,7 +339,7 @@ class String extends Object {
 
 	/**
 	 * Returns the position of the last appearance of the gievn character.
-	 * @param String $char
+	 * @param PString $char
 	 * @param boolean $caseSensitive
 	 * @param integer $offset
 	 * @return integer
@@ -354,9 +354,9 @@ class String extends Object {
 
 	/**
 	 * Returns a substring starting at the position of the first appearance of the given string to the end.
-	 * @param String $String
+	 * @param PString $String
 	 * @param boolean $caseSensitive
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function substringFromPositionOfString($string,$caseSensitive=false) {
 		if ($caseSensitive) {
@@ -365,14 +365,14 @@ class String extends Object {
 			$str = stristr($this->_string,$string);
 		}
 		if ($str === false) $str = '';
-		return String::stringWithString($str);
+		return PString::stringWithString($str);
 	}
 
 	/**
 	 * Returns a substring starting at the beginning to the first appearance of the given string.
-	 * @param String $String
+	 * @param PString $String
 	 * @param boolean $caseSensitive
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function substringToPositionOfString($string,$caseSensitive=false) {
 		if ($caseSensitive) {
@@ -381,13 +381,13 @@ class String extends Object {
 			$str = substr(strrev(stristr(strrev($this->_string), strrev($string))), 0, -strlen($string));
 		}
 		if ($str === false) $str = '';
-		return String::stringWithString($str);
+		return PString::stringWithString($str);
 	}
 
 	/**
 	 * Sets the first character to the given character if it is not already.
-	 * @param String $char
-	 * @return Poundation\String
+	 * @param PString $char
+	 * @return Poundation\PString
 	 */
 	public function ensureFirstCharacter($char) {
 		if (substr($this->_string,0,strlen($char))!=$char) {
@@ -399,8 +399,8 @@ class String extends Object {
 
 	/**
 	 * Sets the last character to the given character if it is not already.
-	 * @param String $char
-	 * @return Poundation\String
+	 * @param PString $char
+	 * @return Poundation\PString
 	 */
 	public function ensureLastCharacter($char) {
 		if (substr($this->_string,$this->length()-strlen($char))!=$char) {
@@ -412,8 +412,8 @@ class String extends Object {
 
 	/**
 	 * Returns the String which has been camelized at the occurances of the given character.
-	 * @param String $seperator
-	 * @return Poundation\String
+	 * @param PString $seperator
+	 * @return Poundation\PString
 	 */
 	public function camelizeAtCharacter($seperator) {
 		if ($this->contains($seperator)) {
@@ -436,7 +436,7 @@ class String extends Object {
 	 * Creates a string where camelized sequeenzes have been converted to contain whitespaces.
 	 * This is the opposite operation to camelizing a string.
 	 * @param string $fillingCharacters
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function splitIntoWordAtCapitals($fillingCharacters = ' ') {
 		$length = $this->length();
@@ -454,12 +454,12 @@ class String extends Object {
 			$words[] = $this->substring($start,$position - $start)->toLowercase();
 			$start = $position;
 		}
-		return String::stringWithString(implode($fillingCharacters,$words));
+		return PString::stringWithString(implode($fillingCharacters,$words));
 	}
 
 	/**
 	 * Returns a string without whitespaces.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function stripWhitespace() {
 		return $this->trim()->camelizeAtCharacter(' ');
@@ -468,7 +468,7 @@ class String extends Object {
 	/**
 	 * Cuts the string after the given length.
 	 * @param integer $length
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function shorten($length) {
 		if ($this->length() > $length) {
@@ -480,7 +480,7 @@ class String extends Object {
 	/**
 	 * Cuts the string after given length and returns all of the string before the end character
 	 * @param integer $length
-	 * @param String $endChar
+	 * @param PString $endChar
 	 */
 	public function shortenAfterSentence($length, $endChar='.'){
 		if ($this->length() > $length) {
@@ -493,7 +493,7 @@ class String extends Object {
 	/**
 	 * Cuts the String after given length and returns all of the String befor end character
 	 * @param integer $length
-	 * @param String $endChar
+	 * @param PString $endChar
 	 */
 	public function shortenAfterChar($length, $char='.'){
 		if ($this->length() > $length) {
@@ -510,10 +510,10 @@ class String extends Object {
 
 	/**
 	 * Returns the md5 of the String.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function md5() {
-		return String::stringWithString(md5($this->stringValue()));
+		return PString::stringWithString(md5($this->stringValue()));
 	}
 
 	public function isUppercaseAtPosition($position) {
@@ -529,24 +529,24 @@ class String extends Object {
 
 	/**
 	 * Returns the urlencoded String.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function urlencode() {
-		return String::stringWithString(urlencode($this->stringValue()));
+		return PString::stringWithString(urlencode($this->stringValue()));
 	}
 
 /**
 	 * Returns the urldecoded String.
-	 * @return Poundation\String
+	 * @return Poundation\PString
 	 */
 	public function urldecode() {
-		return String::stringWithString(urldecode($this->stringValue()));
+		return PString::stringWithString(urldecode($this->stringValue()));
 	}
 
 	/**
 	 * Strips all html tags except for the given ones.
-	 * @param String $allowedTags
-	 * @return Poundation\String
+	 * @param PString $allowedTags
+	 * @return Poundation\PString
 	 */
 	public function stripTags($allowedTags='') {
 		return __(strip_tags($this->stringValue(),$allowedTags));

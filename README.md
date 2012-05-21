@@ -1,9 +1,34 @@
-About
-=====
+# About
+Poundation is a lightweight PHP framework. It provides a set of foundation classes e.g. String, Sets and so on. Inspired by Apple's Foundation framework, it is supposed to help with often occuring tasks and problems.
+Though all poundation classes declare a namespace 'Poundation' a class Prefex __P__ (without underscore) is used. This is only to avoid syntax collisions, e.g. array <=> PArray.
 
-Poundation is a lightweight PHP framework. It provides a set of foundation classes e.g. String, Sets and so on.
+# Requirements
+* PHP >= 5.3
+* Knowledge of object-orientated programming
 
-Usage
-=====
+# Installation
+__Method 1__: Place the sources in a directory that is part of your include_path directive, e.g. /usr/share/php on Debian systems.
+__Method 2__: Place the sources in the document root of your projects.
 
-Later É
+Once the source files are at the desired location, include (or require) Poundation.php in your bootstrap file or whereever you wish to use poundation classes.
+
+# Usage
+Poundation classes are normal PHP classes so you can treat them as usual. All classes are subclasses of __PObject__. You can use the same class as superclass for your own classes.
+
+# Collections
+All collection classes hold other values/objects. There work like normal PHP arrays so you can use the array syntax 
+
+	$collection[] = 'some text';
+	foreach($collection as $value) {
+		echo $value;
+	}
+
+There are different types of collections:
+
+## PSet
+A set can contain a single object only once. In details, adding the same object twice results in adding it only once.
+Sets are numeric, so you cannot add an object with a key.
+
+
+# PString
+A string objects wraps a simple native string into a powerful object. It has a bunch of methods to manipulate and alter the string.

@@ -3,8 +3,8 @@
 /*
  * First, all class files are included.
  */
-require_once 'String.php';
-require_once 'Set.php';
+require_once 'PString.php';
+require_once 'PSet.php';
 
 /*
  * Finally, we declare a bunch of little factory methods.
@@ -13,10 +13,10 @@ require_once 'Set.php';
 /*
  * Creates a new String object.
  * @param String plainstring
- * @return Poundation\String
+ * @return Poundation\PString
  */
 function __($plainString='') {
-    return new Poundation\String($plainString);
+    return new Poundation\PString($plainString);
 }
 
 ?>

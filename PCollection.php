@@ -2,17 +2,15 @@
 
 namespace Poundation;
 
-require_once ('Object.php');
+require_once ('PObject.php');
 
-use Poundation\Object;
+use Poundation\PObject;
 
 /**
- * Collection is an abstract class to manage collections.
- * 
- * @abstract Collection is an abstract class to manage collections.
+ * @abstract PCollection is an abstract class to manage collections.
  * @author danielkbx
  */
-abstract class Collection extends Object implements \Iterator, \Countable, \ArrayAccess {
+abstract class PCollection extends PObject implements \Iterator, \Countable, \ArrayAccess {
 	
 	const CollectionIndexNotFound = - 1;
 	
@@ -66,7 +64,7 @@ abstract class Collection extends Object implements \Iterator, \Countable, \Arra
 	 * @param integer $index
 	 * @return Object
 	 */
-	 function objectForIndex($index) {
+	function objectForIndex($index) {
 		if (isset ( $this->map [$index] )) {
 			return $this->map [$index];
 		} else {

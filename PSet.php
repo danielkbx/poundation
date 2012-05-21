@@ -2,23 +2,21 @@
 
 namespace Poundation;
 
-require_once ('Collection.php');
+require_once ('PArray.php');
+require_once ('PString.php');
 
-use Poundation\Collection;
+use Poundation\PCollection;
 
 /**
- * A set manages a collection of objects.
- * A set contains every object only once.
- * 
- * @abstract A set collection
+ * @abstract PSet manages a collection of objects. It contains every object only once.
  * @author danielkbx
  */
-class Set extends Collection {
+class PSet extends PArray {
 	
 	/*
 	 * Adds an object to the set if it not part yet. 
 	 * @param $object
-	 * @return Poundation\Set
+	 * @return Poundation\PSet
 	 */
 	function add($object) {
 		if ($this->contains ( $object ) === false) {
@@ -35,7 +33,7 @@ class Set extends Collection {
 		if ($offset == null) {
 			$this->add($value);
 		} else {
-			throw new \Exception('Sets cannot have a key.',100,null);
+			throw new \Exception('Sets cannot handle a key.',100,null);
 		}
 	}
 }
