@@ -13,6 +13,12 @@ use Poundation\PCollection;
  */
 class PArray extends PCollection {
 	
+	static function arrayWithArray($array) {
+		$newArray = new PArray();
+		$newArray->addFromArray($array);
+		return $newArray;
+	}
+	
 	/**
 	 * Adds an object to the collection.
 	 * @param $object
