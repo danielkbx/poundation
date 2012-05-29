@@ -20,10 +20,27 @@ class PCharacterSet extends PObject {
 	 */
 	private $_characters;
 	
-	/**
-	 */
 	function __construct() {
 		$this->_characters = new PSet();
+	}
+	
+	function __toString() {
+		return PString::stringWithArray($this->_characters,'')->__toString();
+	}
+	
+	/**
+	 * Returns a new character set pre-setup with whitespace characters.
+	 * @return \Poundation\PCharacterSet
+	 */
+	static function whitespaceCharacterSet() {
+		$set = new PCharacterSet();
+		$set->addCharacter(' ');
+		$set->addCharacter("\n");
+		$set->addCharacter("\t");
+		$set->addCharacter("\r");
+		$set->addCharacter("\0");
+		$set->addCharacter("\x0B");
+		return $set;
 	}
 	
 	/**

@@ -4,6 +4,7 @@ namespace Poundation;
 
 require_once 'PObject.php';
 require_once 'PArray.php';
+require_once 'PCharacterSet.php';
 
 /**
  * Creates a new Poundation String object.
