@@ -4,6 +4,8 @@
  * First, all class files are included.
  */
 require_once 'PString.php';
+require_once 'PCharacterSet.php';
+
 require_once 'PSet.php';
 require_once 'PDictionary.php';
 require_once 'PArray.php';

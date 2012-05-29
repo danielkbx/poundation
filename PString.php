@@ -542,6 +542,21 @@ class PString extends PObject {
 	public function urldecode() {
 		return PString::stringWithString(urldecode($this->stringValue()));
 	}
+	
+	/**
+	 * Iterates over every character of the string and executes the given function. The paramters passed in are the character and a boolean indication if the call is the last one.
+	 * @param Closure $function($character,$isLast) 
+	 */
+	public function iterateByCharacter($function) {
+		$length = $this->length();
+		if ($length > 0) {
+			for ($i = 0; $i < $length; $i++) {
+				$character = $this->substring($i,1);
+				$isLast = ($i == ($length - 1));
+				$function($character, $isLast);
+			}
+		}
+	}
 
 	/**
 	 * Strips all html tags except for the given ones.

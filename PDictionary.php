@@ -2,13 +2,13 @@
 
 namespace Poundation;
 
-require_once ('PCollection.php');
-require_once ('PArray.php');
+require_once 'PCollection.php';
+require_once 'PArray.php';
 
 use Poundation\PCollection;
 
 /**
- *
+ * @abstract A dictionary associates a value with a key the same way like PHP's assioative arrays. You cannot add a value without a key.
  * @author danielkbx
  *        
  */

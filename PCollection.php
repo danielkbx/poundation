@@ -2,7 +2,7 @@
 
 namespace Poundation;
 
-require_once ('PObject.php');
+require_once 'PObject.php';
 
 use Poundation\PObject;
 

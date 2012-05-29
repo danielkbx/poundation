@@ -2,8 +2,8 @@
 
 namespace Poundation;
 
-require_once ('PCollection.php');
-require_once ('PString.php');
+require_once 'PCollection.php';
+require_once 'PString.php';
 
 use Poundation\PCollection;
 

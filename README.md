@@ -39,3 +39,8 @@ A dictionary associates a value with a key the same way like PHP's assioative ar
 
 # 2. PString
 A string object wraps a simple native string into a powerful object. It has a bunch of methods to manipulate and alter the string.
+
+There are several helper objects related to strings:
+
+## 2.1 PCharacterSet
+A character set holds single characters used for splitting, comparing and trimming.

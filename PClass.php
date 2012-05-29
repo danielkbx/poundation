@@ -12,6 +12,7 @@ use Poundation\PObject;
  *        
  */
 class PClass extends PObject {
+	
 	static private $_staticMap = array();	
 	
 	private $_name;
