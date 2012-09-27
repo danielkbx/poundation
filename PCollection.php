@@ -71,6 +71,35 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 			return NULL;
 		}
 	}
+
+	/**
+	 * Returns the first object of the collection.
+	 * @return object
+	 */
+	function firstObject() {
+		return $this->objectForIndex(0);
+	}
+	
+	/**
+	 * Returns the last object of the collection.
+	 * @return object
+	 */
+	function lastObject() {
+		if ($this->count() > 0) {
+			return $this->objectForIndex($this->count() - 1);
+		} else {
+			return NULL;
+		}
+	}
+	
+	/**
+	 * Returns a string with all elements glued together with the given string.
+	 * @param string $glue
+	 * @return \Poundation\PString
+	 */
+	function string($glue) {
+		return __(implode($glue, $this->map));
+	}
 	
 	// Iteration methods
 	

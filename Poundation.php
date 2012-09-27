@@ -1,8 +1,7 @@
 <?php
 
-/*
- * First, all class files are included.
- */
+use Poundation\PArray;
+
 require_once 'PString.php';
 require_once 'PCharacterSet.php';
 
@@ -10,17 +9,30 @@ require_once 'PSet.php';
 require_once 'PDictionary.php';
 require_once 'PArray.php';
 
-/*
- * Finally, we declare a bunch of little factory methods.
- */
+require_once 'PURL.php';
+require_once 'PMailAddress.php';
+require_once 'Server/PRequest.php';
 
-/*
- * Creates a new String object.
- * @param String plainstring
- * @return Poundation\PString
+/**
+ * Creates a new Poundation String object.
+ * @param string $plainString
+ * @return \Poundation\PString
  */
 function __($plainString='') {
-    return new Poundation\PString($plainString);
+	return new \Poundation\PString($plainString);
+}
+
+/**
+ * Returns a new Poundation Array object.
+ * @param array $array
+ * @return \Poundation\PArray
+ */
+function _a($array=false) {
+	if (is_array($array)) {
+		return PArray::arrayWithArray($array);
+	} else {
+		return new PArray();
+	}
 }
 
 ?>

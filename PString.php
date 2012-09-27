@@ -7,15 +7,6 @@ require_once 'PArray.php';
 require_once 'PCharacterSet.php';
 
 /**
- * Creates a new Poundation String object.
- * @param string $plainString
- * @return \Poundation\PString
- */
-function __($plainString='') {
-    return new PString($plainString);
-}
-
-/**
  * @abstract String manages a string object providing a set of string operations. 
  * @author danielkbx
  */
@@ -48,12 +39,11 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	static function stringWithArray($array,$glue='') {
-		$str = '';
-		foreach($array as $component) {
-			$str.= $component . $glue;
+		if ($array instanceof PCollection) {
+			return $array->string($glue);
+		} else {
+			return implode($glue, $array);
 		}
-		$str = self::stringWithString($str);
-		return ($glue!='') ? $str->removeTrailingCharactersWhenMatching($glue) : $str;
 	}
 
 	/**
@@ -361,12 +351,16 @@ class PString extends PObject {
 	 */
 	public function substringFromPositionOfString($string,$caseSensitive=false) {
 		if ($caseSensitive) {
-			$str = strstr($this->_string,$string);
+			$pos=strpos($this->_string,$string);
 		} else {
-			$str = stristr($this->_string,$string);
+			$pos=strpos(strtolower($this->_string),strtolower($string));
 		}
-		if ($str === false) $str = '';
-		return PString::stringWithString($str);
+		
+		if ($pos === false) {
+			return __($this->_string);
+		} else {
+			return __(substr($this->_string,$pos));
+		}
 	}
 
 	/**
@@ -377,12 +371,16 @@ class PString extends PObject {
 	 */
 	public function substringToPositionOfString($string,$caseSensitive=false) {
 		if ($caseSensitive) {
-			$str = substr(strrev(strstr(strrev($this->_string), strrev($string))), 0, -strlen($string));
+			$pos=strpos($this->_string,$string);
 		} else {
-			$str = substr(strrev(stristr(strrev($this->_string), strrev($string))), 0, -strlen($string));
+			$pos=strpos(strtolower($this->_string),strtolower($string));
 		}
-		if ($str === false) $str = '';
-		return PString::stringWithString($str);
+		
+		if ($pos === false) {
+			return __($this->_string);
+		} else {
+			return __(substr($this->_string,0,$pos));
+		}
 	}
 
 	/**
@@ -420,12 +418,12 @@ class PString extends PObject {
 		if ($this->contains($seperator)) {
 			$parts = $this->components($seperator);
 			$string = __('');
-			$isFirstRun = YES;
+			$isFirstRun = true;
 			foreach($parts as $part) {
 				$part = __($part);
 				if (!$isFirstRun) {
 					$part = $part->firstToUppercase();
-				} else $isFirstRun = NO;
+				} else $isFirstRun = false;
 				$string = $string->appendString($part);
 			}
 			return $string->firstToLowercase();
@@ -567,6 +565,32 @@ class PString extends PObject {
 	public function stripTags($allowedTags='') {
 		return __(strip_tags($this->stringValue(),$allowedTags));
 	}
+	
+	/**
+	 * Returns the integer value of the string.
+	 * @return integer
+	 */
+	public function integerValue() {
+		return (int)$this->_string;
+	}
+	
+	/**
+	 * Returns the float value of the string.
+	 * @return float
+	 */
+	public function floatValue() {
+		return (float)$this->_string;
+	}
+	
+	/**
+	 * Returns the boolean value of the string.
+	 * @return boolean
+	 */
+	public function boolValue() {
+		return (boolean)$this->_string;
+	}
+
+
 	
 	/* (non-PHPdoc)
 	 * @see \Poundation\Object::isEqual()
