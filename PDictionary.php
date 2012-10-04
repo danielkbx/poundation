@@ -69,5 +69,3 @@ class PDictionary extends PCollection {
 		}
 	}
 }
-
-?>
