@@ -44,7 +44,7 @@ class PDictionary extends PCollection {
 	 * @return PArray
 	 */
 	public function allValues() {
-		return PArray::arrayWithArray(array_values($this->map));
+		return PArray::create(array_values($this->map));
 	}
 	
 	/**
@@ -52,7 +52,7 @@ class PDictionary extends PCollection {
 	 * @return PArray
 	 */
 	public function allKeys() {
-		return PArray::arrayWithArray(array_keys($this->map));
+		return parray(array_keys($this->map));
 	}
 	
 	/**

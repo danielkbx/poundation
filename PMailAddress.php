@@ -19,7 +19,7 @@ class PMailAddress {
 		}
 	}
 	
-	static function mailAddressWithMailAddress($mail) {
+	static function createFromString($mail) {
 		if (self::verifyAddress($mail)) {
 			$mail = new PMailAddress($mail);
 			return $mail;

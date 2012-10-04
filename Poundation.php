@@ -27,9 +27,9 @@ function __($plainString='') {
  * @param array $array
  * @return \Poundation\PArray
  */
-function _a($array=false) {
+function parray($array=false) {
 	if (is_array($array)) {
-		return PArray::arrayWithArray($array);
+		return PArray::create($array);
 	} else {
 		return new PArray();
 	}
