@@ -27,7 +27,7 @@ class PString extends PObject {
 	 * @param $aString
 	 * @return Poundation\PString
 	 */
-	static function stringWithString($aString) {
+	static function createFromString($aString) {
 		if ($aString instanceof PString) $aString = $aString->__toString();
 		return new PString($aString);
 	}
@@ -70,11 +70,11 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function substring($startPosition, $length = 0) {
-		if ($this->length() == 0) return PString::stringWithString('');
+		if ($this->length() == 0) return PString::createFromString('');
 		if ($length == 0) {
-			return PString::stringWithString(substr($this->_string, $startPosition));
+			return PString::createFromString(substr($this->_string, $startPosition));
 		} else {
-			return PString::stringWithString(substr($this->_string, $startPosition, $length));
+			return PString::createFromString(substr($this->_string, $startPosition, $length));
 		}
 	}
 
@@ -109,7 +109,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function trim() {
-		return PString::stringWithString(trim($this->_string));
+		return PString::createFromString(trim($this->_string));
 	}
 
 	/**
@@ -117,7 +117,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function uppercase() {
-		return PString::stringWithString(strtoupper($this->_string));
+		return PString::createFromString(strtoupper($this->_string));
 	}
 
 	/**
@@ -155,7 +155,7 @@ class PString extends PObject {
 			return $this;
 		} elseif ($length == 1) {
 			// default behaviour of PHP so let's use it
-			return PString::stringWithString(ucfirst($this->_string));
+			return PString::createFromString(ucfirst($this->_string));
 		} else {
 			// we uppercase the first characters and append the rest
 			return $this->first($length)->toUppercase()->appendString($this->substring($length));
@@ -181,7 +181,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function lowercase() {
-		return PString::stringWithString(strtolower($this->_string));
+		return PString::createFromString(strtolower($this->_string));
 	}
 
 	/**
@@ -191,7 +191,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function replace($needle,$replacement='') {
-		return PString::stringWithString(str_replace($needle,$replacement,$this->_string));
+		return PString::createFromString(str_replace($needle,$replacement,$this->_string));
 	}
 
 	/**
@@ -220,7 +220,7 @@ class PString extends PObject {
 	public function removeTrailingCharacters($length) {
 		if ($length <= $this->length()) {
 			return $this->substring(0,$this->length()-$length);
-		} else return PString::stringWithString('');
+		} else return PString::createFromString('');
 	}
 
 	/**
@@ -249,7 +249,7 @@ class PString extends PObject {
 	public function removeLeadingCharacters($length) {
 		if ($length <= $this->length()) {
 			return $this->substring($length);
-		} else return PString::stringWithString('');
+		} else return PString::createFromString('');
 	}
 
 	/**
@@ -257,7 +257,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function reverse() {
-		return PString::stringWithString(strrev($this->_string));
+		return PString::createFromString(strrev($this->_string));
 	}
 
 	/**
@@ -266,7 +266,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function appendString($appendix) {
-		return PString::stringWithString($this->_string . $appendix);
+		return PString::createFromString($this->_string . $appendix);
 	}
 
 	/**
@@ -285,7 +285,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function prependString($prefix) {
-		return PString::stringWithString($prefix . $this->_string);
+		return PString::createFromString($prefix . $this->_string);
 	}
 
 	/**
@@ -298,7 +298,7 @@ class PString extends PObject {
 		$array = new PArray();
 		foreach($tmpArray as $component) {
 			if ($component != '') {
-				$array[] = PString::stringWithString($component);
+				$array[] = PString::createFromString($component);
 			}
 		}
 		return $array;
@@ -453,7 +453,7 @@ class PString extends PObject {
 			$words[] = $this->substring($start,$position - $start)->toLowercase();
 			$start = $position;
 		}
-		return PString::stringWithString(implode($fillingCharacters,$words));
+		return PString::createFromString(implode($fillingCharacters,$words));
 	}
 
 	/**
@@ -512,7 +512,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function md5() {
-		return PString::stringWithString(md5($this->stringValue()));
+		return PString::createFromString(md5($this->stringValue()));
 	}
 
 	public function isUppercaseAtPosition($position) {
@@ -531,7 +531,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function urlencode() {
-		return PString::stringWithString(urlencode($this->stringValue()));
+		return PString::createFromString(urlencode($this->stringValue()));
 	}
 
 /**
@@ -539,7 +539,7 @@ class PString extends PObject {
 	 * @return Poundation\PString
 	 */
 	public function urldecode() {
-		return PString::stringWithString(urldecode($this->stringValue()));
+		return PString::createFromString(urldecode($this->stringValue()));
 	}
 	
 	/**

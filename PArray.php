@@ -13,9 +13,11 @@ use Poundation\PCollection;
  */
 class PArray extends PCollection {
 	
-	static function arrayWithArray($array) {
+	static function create($array=NULL) {
 		$newArray = new PArray();
-		$newArray->addFromArray($array);
+		if ($array) {
+			$newArray->addArray($array);
+		}
 		return $newArray;
 	}
 	
@@ -27,7 +29,7 @@ class PArray extends PCollection {
 		$this->map[] = $object;
 	}
 	
-	function addFromArray($array) {
+	function addArray($array) {
 		if ($array) {
 			$process = is_array($array);
 			if ($process == false) {

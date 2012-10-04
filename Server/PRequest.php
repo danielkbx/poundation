@@ -27,7 +27,7 @@ class PRequest {
 			$URI =    $_SERVER['REQUEST_URI'];
 		}
 
-		$fullURL = PString::stringWithString('');
+		$fullURL = PString::createFromString('');
 		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
 			$fullURL->addString('https://');
 			$expectedPort = 443;
