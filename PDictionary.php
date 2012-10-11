@@ -31,6 +31,16 @@ class PDictionary extends PCollection {
 	}
 	
 	/**
+	 * Removes the value with the given key.
+	 * @param string $key
+	 */
+	public function removeValueForKey($key) {
+		if (isset($this->map[$key])) {
+			unset($this->map[$key]);
+		}
+	}
+	
+	/**
 	 * Returns the value assoziated with the given key.
 	 * @param string $key
 	 * @return multitype

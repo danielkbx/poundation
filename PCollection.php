@@ -178,6 +178,14 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	public function offsetUnset($offset) {
 		unset($this->map[$offset]);
 	}
+	
+	/**
+	 * Returns a PHP-native array.
+	 * @return array
+	 */
+	public function nativeArray() {
+		return $this->map;
+	}
 }
 
 ?>
