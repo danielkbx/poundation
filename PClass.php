@@ -3,6 +3,7 @@
 namespace Poundation;
 
 require_once ('PObject.php');
+require_once ('PString.php');
 
 use Poundation\PObject;
 
@@ -28,48 +29,50 @@ class PClass extends PObject {
 	static public function classFromObject($object) {
 		if ($object && is_object($object)) {
 			$objectsClassName = get_class($object);
-			$existingClass = (isset(PClass::$_staticMap[$objectsClassName])) ? PClass::$_staticMap[$objectsClassName] : null;
-			if (!$existingClass) {
-				$existingClass = new PClass();
-				if ($existingClass->__constructWithObject($object)) {
-					PClass::$_staticMap[$objectsClassName] = $existingClass;
-				} else {
-					throw new \Exception('Cannot create class class from value ' . $object,102,null);	
-				}
-			}
-			return $existingClass;
+			return self::classFromString($objectsClassName);
 		} else {
 			throw new \Exception(@"Cannot create class class from non-object value",101,null);
 		}
 	}
 	
-	private function __constructWithObject($object) {
-		if ($object && is_object($object)) {
-			$this->_name = get_class($object);
-			
-			$parentClassname = get_parent_class($object);
+	static public function classFromString($name) {
+		if ($name && (is_string($name) || $name instanceof PString)) {
+			$existingClass = (isset(PClass::$_staticMap[$name])) ? PClass::$_staticMap[$name] : null;
+			if (!$existingClass) {
+				$existingClass = new PClass($name);
+				PClass::$_staticMap[$name] = $existingClass;
+			}
+			return $existingClass;
+		} else {
+			throw new \Exception(@"Cannot create class class from non-string value",101,null);
+		}
+	}
+
+	private function __construct($name) {
+		if ($name && (is_string($name) || $name instanceof PString)) {
+			$this->_name = $name;
+			$parentClassname = get_parent_class($this->_name);
 			while($parentClassname) {
 				$this->_classHirarchy[] = $parentClassname;
 				$parentClassname = get_parent_class($parentClassname);
 			}
 			
-			$interfaces = class_implements($object);
+			$interfaces = class_implements($this->_name);
 			foreach ($interfaces as $interface) {
 				$this->_classInterfaces[] = $interface;
 			}
-			
 			return $this;
 		} else {
 			return false;
-		}	
+		}
 	}
-	
+		
 	/**
 	 * Returns the name of the class.
-	 * @return string
+	 * @return PString
 	 */
 	function name() {
-		return $this->_name;	
+		return PString::createFromString($this->_name);	
 	}
 	
 	/**
@@ -79,17 +82,23 @@ class PClass extends PObject {
 	 * @return boolean
 	 */
 	function isKindOfClass($class) {
-		if (is_object($class)) {
-			if (get_class($class) == 'PClass')
-			{
-				$class = $class->name();
-			}
-		}
+		
+		$classname = false;
 		if (is_string($class)) {
-			if ($this->name() == $class) {
+			$classname = $class;
+		} else if ($class instanceof PString) {
+			$classname = (string)$class;
+		} else if ($class instanceof PClass) {
+			$classname = (string)$class->name();
+		} else if (is_object($class)) {
+			$classname = get_class($class);
+		}
+		
+		if ($classname !== false) {
+			if ($this->_name == $classname) {
 				return true;
 			} else {
-				return (array_search($class,$this->_classHirarchy) !== false);
+				return (array_search($classname,$this->_classHirarchy) !== false);
 			}
 		} else {
 			throw new \Exception('Cannot check class with target value ' . $class,104,null);
@@ -106,6 +115,26 @@ class PClass extends PObject {
 			return (array_search($interface, $this->_classInterfaces) !== false);
 		}
 		return false;
+	}
+	
+	/**
+	 * Invokes the method on the class (therefore it is a class method call) and returns the result.
+	 * @param string $methodName
+	 */
+	function invokeMethod($methodName) {
+		return $this->invokeMethodWithParameters($methodName, array());
+	}
+	
+	/**
+	 * Invokes the method on the class (therefore it is a class method call), passes the arguments and returns the result.
+	 * @param string $methodName
+	 * @param array $params
+	 * @return mixed
+	 */
+	function invokeMethodWithParameters($methodName,$params) {
+		if (is_string($methodName)) {
+			return call_user_func_array(array($this->_name,$methodName), $params);
+		}
 	}
 	
 }

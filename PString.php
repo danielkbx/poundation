@@ -105,6 +105,32 @@ class PString extends PObject {
 	}
 
 	/**
+	 * Returns true of the string has the given prefix.
+	 * @param string $prefix
+	 * @return boolean
+	 */
+	
+	public function hasPrefix($prefix) {
+		if (strlen($prefix) > 0) {
+			return ($this->last(strlen($prefix)) === $prefix);
+		}
+		return true;
+		
+	}
+
+	/**
+	 * Returns true of the string has the given suffix.
+	 * @param string $suffix
+	 * @return boolean
+	 */
+	public function hasSuffix($suffix) {
+		if (strlen($suffix) > 0) {
+			return ($this->last(strlen($suffix)) === $suffix);
+		}
+		return true;
+	}
+	
+	/**
 	 * Returns a string without leading and trailing whitespace.
 	 * @return Poundation\PString
 	 */
