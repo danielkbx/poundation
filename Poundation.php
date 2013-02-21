@@ -28,11 +28,7 @@ function __($plainString='') {
  * @return \Poundation\PArray
  */
 function parray($array=false) {
-	if (is_array($array)) {
-		return PArray::create($array);
-	} else {
-		return new PArray();
-	}
+	return PArray::create($array);
 }
 
 ?>

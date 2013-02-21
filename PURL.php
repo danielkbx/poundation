@@ -30,6 +30,19 @@ class PURL {
 	private $path;
 	
 	/**
+	 * 
+	 * @var array
+	 */
+	private $parameters = array();
+
+    public static function URLWithString($urlString) {
+        $url = new self($urlString);
+        if ($url->host()->length() == 0) {
+
+        }
+    }
+
+	/**
 	 *  Creates a new PURL object with the given string-based URL.
 	 *  @return PURL
 	 */
@@ -42,8 +55,8 @@ class PURL {
 		$components = $this->URLString->components(':');
 		switch ($components->count()) {
 			case 0:
-				$this->scheme = NULL;
-				$this->host = NULL;
+				$this->scheme = __('');
+				$this->host = __('');
 				$this->port = 0;
 				break;
 			case 1:
@@ -55,8 +68,7 @@ class PURL {
 				$this->scheme = $components->firstObject();
 				$host = $components->lastObject()->removeLeadingCharactersWhenMatching('//');
 				$this->host = $host->substringToPositionOfString('/');
-				$path = $host->substringFromPositionOfString('/');
-				$this->path = ($path->length() > 0) ? $path : NULL;
+				$this->path = $host->substringFromPositionOfString('/');
 				$this->port = 0;
 				break;
 			default:
@@ -67,11 +79,11 @@ class PURL {
 				switch ($portsAndPathComponents->count()) {
 					case 0:
 						$this->port = 0;
-						$this->path = NULL;
+						$this->path = __('');
 						break;
 					case 1:
 						$this->port = (int)$portsAndPathComponents->firstObject()->integerValue();
-						$this->path = NULL;
+						$this->path = __('');
 						break;
 					default:
 						$this->port = $portsAndPathComponents->firstObject()->integerValue();
@@ -126,6 +138,40 @@ class PURL {
 	}
 	
 	/**
+	 * Adds a path to the URL.
+	 * @param string $path
+	 * @param bool $isDirectory
+	 * @return \Poundation\PURL
+	 */
+	public function addPathComponent($path,$isDirectory = false) {
+		$pathToUse = false;
+		if (is_string($path)) {
+			if (strlen($path) > 0) {
+				$pathToUse = $path;
+			}
+		} else if ($path instanceof PString) {
+			if ($path->length() > 0) {
+				$pathToUse = $path->stringValue();
+			}
+		}
+		
+		if ($pathToUse !== false) {
+			if (!$this->path->hasPrefix('/')) {
+				$this->path->addString('/');
+			}
+			$this->path->addString($path);
+			
+			if ($isDirectory) {
+				$this->path->ensureLastCharacter('/');
+			} else {
+				$this->path->removeTrailingCharactersWhenMatching('/');
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
 	 * Returns a list of components of the URL.
 	 * @return \Poundation\PArray
 	 */
@@ -171,6 +217,78 @@ class PURL {
 			}			
 		}
 		return $subdomains;
+	}
+	
+	function setParameter($key,$value) {
+		$usedKey = false;
+		$usedValue = false;
+		
+		if (is_string($key)) {
+			if (strlen($key) > 0) {
+				$usedKey = $key;
+			}
+		} else if ($key instanceof PString) {
+			if ($key->length() > 0) {
+				$usedKey = $key->stringValue();
+			}
+		}
+		
+		if (is_string($value)) {
+			if (strlen($value) > 0) {
+				$usedValue = $value;
+			}
+		} else if ($value instanceof PString) {
+			if ($value->length() > 0) {
+				$usedValue = $value->stringValue();
+			}
+		}
+		
+		if ($key !== false && $value !== false) {
+			
+			$this->parameters[$key] = $value;
+			
+		} else {
+			throw new Exception('key and value must be of type string (PString)');
+		} 
+		
+		
+	}
+	
+	function __toString() {
+		
+		$url = PString::createFromString($this->scheme())->addString('://');
+		$url->addString($this->host());
+		
+		if ($this->scheme()->isEqual(PURL::SCHEME_HTTP)) {
+			if ($this->port() != 80) {
+				$url->addString(':')->addString((string)$this->port());		
+			}
+		} else if ($this->scheme() === PURL::SCHEME_HTTPS) {
+			if ($this->port() != 443) {
+				$url->addString(':')->addString((string)$this->port());		
+			}
+		}
+		
+		if ($this->path()->length() > 0) {
+			$path = clone $this->path();
+			$url->addString($path->ensureFirstCharacter('/'));	
+		}
+		
+		if (count($this->parameters) > 0) {
+			
+			$usedParameters = array();
+			foreach($this->parameters as $key=>$value) {
+				
+				$encodedKey = urlencode($key);
+				$encodedValue = urlencode($value);
+				$usedParameters[] = $encodedKey . '=' . $encodedValue;
+			}
+			$allParameters = implode('&', $usedParameters);
+			$url->addString('?')->addString($allParameters);
+		}
+		
+		return $url->stringValue();
+		
 	}
 	
 }

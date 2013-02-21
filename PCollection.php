@@ -108,7 +108,8 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * @see Iterator::current()
 	 */
 	public function current() {
-		return $this->map [$this->iteratorPosition];
+		return current($this->map);
+		//return $this->map [$this->iteratorPosition];
 	}
 	
 	/*
@@ -116,7 +117,8 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * @see Iterator::key()
 	 */
 	public function key() {
-		return $this->iteratorPosition;
+		return key($this->map);
+		//return $this->iteratorPosition;
 	}
 	
 	/*
@@ -124,7 +126,8 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * @see Iterator::next()
 	 */
 	public function next() {
-		++ $this->iteratorPosition;
+		return next($this->map);
+		//++ $this->iteratorPosition;
 	}
 	
 	/*
@@ -132,7 +135,8 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * @see Iterator::rewind()
 	 */
 	public function rewind() {
-		$this->iteratorPosition = 0;
+		return reset($this->map);
+		//$this->iteratorPosition = 0;
 	}
 	
 	/*
@@ -140,7 +144,8 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * @see Iterator::valid()
 	 */
 	public function valid() {
-		return (isset ( $this->map [$this->iteratorPosition] ));
+		return ($this->current() !== false);
+		//return (isset ( $this->map [$this->iteratorPosition] ));
 	}
 	
 	// Array Access methods

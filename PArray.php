@@ -21,6 +21,22 @@ class PArray extends PCollection {
 		return $newArray;
 	}
 	
+	static function createProgressivArray($startValue,$endValue,$step = 1) {
+		$newArray = new PArray();
+		if (is_numeric($startValue) && is_numeric($endValue) && is_numeric($step)) {
+			if ($startValue < $endValue && $step > 0) {
+				for ($i = $startValue; $i <= $endValue; $i = $i+$step) {
+					$newArray->add($i);
+				}
+			} else if ($startValue > $endValue && $step < 0) {
+				for ($i = $startValue; $i >= $endValue; $i = $i+$step) {
+					$newArray->add($i);
+				}
+			}
+		}
+		return $newArray;
+	}
+	
 	/**
 	 * Adds an object to the collection.
 	 * @param $object
@@ -33,12 +49,9 @@ class PArray extends PCollection {
 		if ($array) {
 			$process = is_array($array);
 			if ($process == false) {
-				if (is_object($array) && $array instanceof PObject) {
-					/**
-					 * @var PObject $object
-					 */
-					$object = $array;
-					$process = $object->implementsInterface('Iterator');
+				if (is_object($array)) {
+					$class = PClass::classFromObject($array);
+					$process = $class->implementsInterface('Traversable');
 				}	
 			}
 			
@@ -59,6 +72,15 @@ class PArray extends PCollection {
 			
 		}
 	}
+	
+	function dictionary() {
+		$dict = new PDictionary();
+		foreach($this as $value) {
+			$dict->setValueForKey($value, $value);
+		}
+		return $dict;
+	}
+
 	
 	/*
 	 * (non-PHPdoc)

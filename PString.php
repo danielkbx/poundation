@@ -112,7 +112,13 @@ class PString extends PObject {
 	
 	public function hasPrefix($prefix) {
 		if (strlen($prefix) > 0) {
-			return ($this->last(strlen($prefix)) === $prefix);
+			
+			if (strlen($prefix) > $this->length()) {
+				return false;
+			}
+			
+			$myPrefix = $this->first(strlen($prefix));
+			return ((string)$myPrefix == (string)$prefix);
 		}
 		return true;
 		
@@ -383,7 +389,7 @@ class PString extends PObject {
 		}
 		
 		if ($pos === false) {
-			return __($this->_string);
+			return __('');
 		} else {
 			return __(substr($this->_string,$pos));
 		}
@@ -622,7 +628,13 @@ class PString extends PObject {
 	 * @see \Poundation\Object::isEqual()
 	 */
 	 public function isEqual($otherObject) {
-		return ($this->__toString() === $otherObject->__toString());	
+	 	if (is_string($otherObject)) {
+	 		return ($this->__toString() === $otherObject);
+	 	} else if ($otherObject instanceof PString) {
+			return ($this->__toString() === $otherObject->__toString());
+	 	}	else {
+	 		return false;
+	 	}
 	}
 
 	
