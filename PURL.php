@@ -35,11 +35,28 @@ class PURL {
 	 */
 	private $parameters = array();
 
+    /**
+     * Returns a new URL object if it can be constructed.
+     * @param $urlString
+     * @return null|PURL
+     */
     public static function URLWithString($urlString) {
         $url = new self($urlString);
         if ($url->host()->length() == 0) {
-
+            return null;
+        } else {
+            return $url;
         }
+    }
+
+    /**
+     * Checks if a given string has the structure of an URL.
+     * @param $urlString
+     * @return bool
+     */
+    public static function isValidURLString($urlString) {
+        $url = self::URLWithString($urlString);
+        return ($url instanceof PURL);
     }
 
 	/**
