@@ -2,6 +2,9 @@
 
 use Poundation\PArray;
 
+require_once 'PObject.php';
+require_once 'PError.php';
+
 require_once 'PString.php';
 require_once 'PCharacterSet.php';
 
@@ -12,6 +15,8 @@ require_once 'PArray.php';
 require_once 'PURL.php';
 require_once 'PMailAddress.php';
 require_once 'Server/PRequest.php';
+
+require_once 'PImage.php';
 
 /**
  * Creates a new Poundation String object.
