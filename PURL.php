@@ -63,7 +63,7 @@ class PURL {
 	 *  Creates a new PURL object with the given string-based URL.
 	 *  @return PURL
 	 */
-	function __construct($URLString) {
+	function __construct($URLString = null) {
 		if (!$URLString instanceof PString) {
 			$URLString = new PString($URLString);
 		}
@@ -129,6 +129,16 @@ class PURL {
 	public function scheme() {
 		return $this->scheme;
 	}
+
+    /**
+     * Sets the scheme of the URL.
+     * @param $scheme
+     * @return PURL
+     */
+    public function setScheme($scheme) {
+        $this->scheme = __($scheme);
+        return $this;
+    }
 	
 	/**
 	 * Returns the host of the request.
@@ -137,6 +147,16 @@ class PURL {
 	public function host() {
 		return $this->host;
 	}
+
+    /**
+     * Sets the host of the URL.
+     * @param $host
+     * @return PURL
+     */
+    public function setHost($host) {
+        $this->host = __($host);
+        return $this;
+    }
 	
 	/**
 	 * Returns the port of the request.
@@ -145,7 +165,17 @@ class PURL {
 	public function port() {
 		return $this->port;
 	}
-	
+
+    /**
+     * Sets the port of the URL.
+     * @param $port
+     * @return PURL
+     */
+    public function setPort($port) {
+        $this->port = $port;
+        return $this;
+    }
+
 	/**
 	 * Returns the path of the URL.
 	 * @return \Poundation\PString
@@ -153,6 +183,16 @@ class PURL {
 	public function path() {
 		return $this->path;
 	}
+
+    /**
+     * Sets the path of the URL.
+     * @param $path
+     * @return PURL
+     */
+    public function setPath($path) {
+        $this->path = __($path);
+        return $this;
+    }
 	
 	/**
 	 * Adds a path to the URL.
@@ -286,7 +326,7 @@ class PURL {
 			}
 		}
 		
-		if ($this->path()->length() > 0) {
+		if ($this->path instanceof PString && $this->path()->length() > 0) {
 			$path = clone $this->path();
 			$url->addString($path->ensureFirstCharacter('/'));	
 		}
