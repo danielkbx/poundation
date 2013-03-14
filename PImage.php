@@ -280,7 +280,7 @@ class PImage extends PObject
 
         if (is_string($this->name)) {
 
-            switch (strrchr($this->name, ".")) {
+            switch (strrchr(strtolower($this->name), ".")) {
                 case ".bmp":
                     $mime = "image/bmp";
                     break;
