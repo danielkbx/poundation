@@ -116,6 +116,18 @@ class PImage extends PObject
         return $this->name;
     }
 
+    public function getExtension() {
+        return strtolower(pathinfo($this->getName(), PATHINFO_EXTENSION));
+    }
+
+    public function setName($name) {
+        $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+        if ($extension !== $this->getExtension()) {
+            _logger()->warn('Setting a new name (' . $name . ') on a content image (' . $this->getName() . ') but the extension does not match.');
+        }
+        $this->name = $name;
+    }
+
     /**
      * Returns the width of the image.
      * @return int
@@ -278,9 +290,11 @@ class PImage extends PObject
 
         $mime = "application/octet-stream";
 
+        $extension = $this->getExtension();
+
         if (is_string($this->name)) {
 
-            switch (strrchr(strtolower($this->name), ".")) {
+            switch ($extension) {
                 case ".bmp":
                     $mime = "image/bmp";
                     break;
