@@ -295,67 +295,67 @@ class PImage extends PObject
         if (is_string($this->name)) {
 
             switch ($extension) {
-                case ".bmp":
+                case "bmp":
                     $mime = "image/bmp";
                     break;
-                case ".gif":
+                case "gif":
                     $mime = "image/gif";
                     break;
-                case ".ief":
+                case "ief":
                     $mime = "image/ief";
                     break;
-                case ".jpeg":
+                case "jpeg":
                     $mime = "image/jpeg";
                     break;
-                case ".jpg":
+                case "jpg":
                     $mime = "image/jpeg";
                     break;
-                case ".jpe":
+                case "jpe":
                     $mime = "image/jpeg";
                     break;
-                case ".png":
+                case "png":
                     $mime = "image/png";
                     break;
-                case ".tiff":
+                case "tiff":
                     $mime = "image/tiff";
                     break;
-                case ".tif":
+                case "tif":
                     $mime = "image/tiff";
                     break;
-                case ".djvu":
+                case "djvu":
                     $mime = "image/vnd.djvu";
                     break;
-                case ".djv":
+                case "djv":
                     $mime = "image/vnd.djvu";
                     break;
-                case ".wbmp":
+                case "wbmp":
                     $mime = "image/vnd.wap.wbmp";
                     break;
-                case ".ras":
+                case "ras":
                     $mime = "image/x-cmu-raster";
                     break;
-                case ".pnm":
+                case "pnm":
                     $mime = "image/x-portable-anymap";
                     break;
-                case ".pbm":
+                case "pbm":
                     $mime = "image/x-portable-bitmap";
                     break;
-                case ".pgm":
+                case "pgm":
                     $mime = "image/x-portable-graymap";
                     break;
-                case ".ppm":
+                case "ppm":
                     $mime = "image/x-portable-pixmap";
                     break;
-                case ".rgb":
+                case "rgb":
                     $mime = "image/x-rgb";
                     break;
-                case ".xbm":
+                case "xbm":
                     $mime = "image/x-xbitmap";
                     break;
-                case ".xpm":
+                case "xpm":
                     $mime = "image/x-xpixmap";
                     break;
-                case ".xwd":
+                case "xwd":
                     $mime = "image/x-xwindowdump";
                     break;
             }
