@@ -639,9 +639,25 @@ class PString extends PObject {
 	 	}
 	}
 
-	
-	
-	
+    /**
+     * Returns a slug.
+     * @return PString
+     */
+    public function slug() {
+        $text = preg_replace('~[^\\pL\d]+~u', '-', $this->_string);
+        $text = trim($text, '-');
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        $text = strtolower($text);
+        $text = preg_replace('~[^-\w]+~', '', $text);
+        if (empty($text)) {
+            return __('n-a');
+        }
+        return __($text);
+    }
+
+
+
+
 }
 
 ?>

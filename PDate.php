@@ -237,6 +237,21 @@ class PDate extends PObject {
     }
 
     /**
+     * Adjust the date to the timezone with the given name.
+     * @param $timezoneString
+     * @return bool
+     */
+    public function adjustTimezone($timezoneString) {
+
+        $timezone = new \DateTimeZone($timezoneString);
+        if ($timezone) {
+            $this->data->setTimezone($timezone);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns a string formated in the native Doctrine way.
      * @return string|null
      */
@@ -254,6 +269,19 @@ class PDate extends PObject {
      */
     public function getInISO8601Format() {
         return ($this->data) ? $this->getDateTime()->format(\DateTime::ISO8601) : null;
+    }
+
+    public function getFormatedString($format) {
+        return $this->data->format($format);
+    }
+
+    /**
+     * Returns true if this date is earlier than the other date.
+     * @param PDate $otherDate
+     * @return bool
+     */
+    public function isBefore(PDate $otherDate) {
+        return ($this->data < $otherDate->data);
     }
 
 
