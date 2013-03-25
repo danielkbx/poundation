@@ -2,7 +2,7 @@
 
 namespace Poundation;
 
-class PDate extends PObject {
+class PDate extends PObject implements \JsonSerializable {
 
     private $data;
 
@@ -28,12 +28,36 @@ class PDate extends PObject {
         }
     }
 
+    /**
+     * Returns a new PDate object set to now.
+     * @return PDate
+     */
+    static function now() {
+        return new self();
+    }
+
+    /**
+     * Returns a new PDate object set to midnight today.
+     * @return PDate
+     */
+    static function today() {
+        return self::now()->setToMidnight();
+    }
+
     public function __clone() {
 
         $isoValue = $this->getInISO8601Format();
         $newValue = new \DateTime($isoValue);
         $this->data = $newValue;
 
+    }
+
+    public function __toString() {
+        return $this->getInISO8601Format();
+    }
+
+    public function jsonSerialize() {
+        return $this->getInISO8601Format();
     }
 
     /**

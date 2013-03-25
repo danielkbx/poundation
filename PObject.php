@@ -11,7 +11,9 @@ use \Poundation\PClass;
  * @author danielkbx
  */
 class PObject {
-	
+
+    protected $flags;
+
 	function isEqual($otherObject) {
 		return ($otherObject === $this);
 	}
@@ -36,6 +38,18 @@ class PObject {
 	function implementsInterface($interface) {
 		return $this->classObject()->implementsInterface($interface);
 	}
+
+    protected function isFlagSet($flag) {
+        return (($this->flags & $flag) == $flag);
+    }
+
+    protected function setFlag($flag, $value = true) {
+        if ($value == true) {
+            $this->flags |= $flag;
+        } else {
+            $this->flags &= ~$flag;
+        }
+    }
 	
 }
 

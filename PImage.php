@@ -13,6 +13,7 @@ class PImage extends PObject
     private $name;
 
     private $data;
+    private $hash;
 
     private $image = null;
 
@@ -41,10 +42,26 @@ class PImage extends PObject
         return $image;
     }
 
+    /**
+     * Returns the hash of an image file without loading it into memory.
+     * @param $filename
+     * @return null|string
+     */
+    static function hashFromFilename($filename) {
+        $hash = null;
+
+        if (file_exists($filename)) {
+            $hash = md5_file($filename);
+        }
+
+        return $hash;
+    }
+
     private function setImage($image) {
         if (is_resource($image)) {
             $this->image = $image;
             $this->data = null;
+            $this->hash = null;
         }
     }
 
@@ -106,6 +123,17 @@ class PImage extends PObject
             ob_end_clean();
         }
         return $this->data;
+    }
+
+    /**
+     * Returns a MD5 hash of the image binary data.
+     * @return string
+     */
+    public function getHash() {
+        if ($this->hash == null) {
+           $this->hash = md5($this->getData());
+        }
+        return $this->hash;
     }
 
     /**
