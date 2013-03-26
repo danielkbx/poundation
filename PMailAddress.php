@@ -4,7 +4,7 @@ namespace Poundation;
 
 include_once 'PString.php';
 
-class PMailAddress {
+class PMailAddress extends PObject implements \JsonSerializable {
 
 	private $user;
 	private $host;
@@ -84,6 +84,19 @@ class PMailAddress {
 	public function __toString() {
 		return $this->mailAddressFromComponents($this->getUser(), $this->getHost());
 	}
+
+    /**
+     * (PHP 5 >= 5.4.0)
+     * Serializes the object to a value that can be serialized natively by json_encode().
+     * @link http://docs.php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed Returns data which can be serialized by json_encode(), which is a value of any type other than a resource.
+     */
+    function jsonSerialize()
+    {
+        return $this->__toString();
+    }
+
+
 }
 
 ?>

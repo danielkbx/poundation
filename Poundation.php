@@ -18,6 +18,9 @@ require_once 'Server/PRequest.php';
 
 require_once 'PImage.php';
 
+require_once 'PCoordinate.php';
+require_once 'PAddress.php';
+
 /**
  * Creates a new Poundation String object.
  * @param string $plainString
