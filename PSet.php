@@ -24,6 +24,21 @@ class PSet extends PArray {
 		}
 		return $this;
 	}
+
+    /**
+     * Removes the object from the set.
+     * @param $object
+     * @return PSet
+     */
+    function remove($object) {
+        if ($object && $this->contains($object)) {
+            $index = $this->indexOfObject($object);
+            if ($index != PCollection::CollectionIndexNotFound) {
+                unset($this->map[$index]);
+            }
+        }
+        return $this;
+    }
 	
 	/*
 	 * (non-PHPdoc)

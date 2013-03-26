@@ -51,6 +51,31 @@ class PCoordinate extends PObject implements \JsonSerializable  {
         );
     }
 
+    /**
+     * Creates a coordinate object from json.
+     * @param $json
+     * @return null|PCoordinate
+     */
+    static public function addressFromJSON($json) {
+        $coordinate = null;
+
+        if (is_string($json)) {
+            $json = json_decode($json);
+        }
+
+        if (is_array($json)) {
+            if (isset($json['lat']) && isset($json['lon'])) {
+                $lat = $json['lat'];
+                $lon = $json['lon'];
+                if (is_numeric($lat) && is_numeric($lat)) {
+                    $coordinate = self::createCoordinate((float)$lat, (float)$lon);
+                }
+            }
+        }
+
+        return $coordinate;
+    }
+
 
     /**
      * Sets the coordinate's latitude.

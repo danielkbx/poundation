@@ -44,6 +44,43 @@ class PAddress extends \Poundation\PObject implements \JsonSerializable {
     }
 
     /**
+     * Creates the address from json.
+     * @param $json
+     * @return null|PAddress
+     */
+    static public function addressFromJSON($json) {
+        $address = null;
+
+        if (is_string($json)) {
+            $json = json_decode($json);
+        }
+
+        if (is_array($json)) {
+            $address = new PAddress();
+            if (isset($json[self::FIELDNAME_STREET])) {
+                $address->setStreet($json[self::FIELDNAME_STREET]);
+            }
+            if (isset($json[self::FIELDNAME_ZIP])) {
+                $address->setZip($json[self::FIELDNAME_ZIP]);
+            }
+            if (isset($json[self::FIELDNAME_CITY])) {
+                $address->setCity($json[self::FIELDNAME_CITY]);
+            }
+            if (isset($json[self::FIELDNAME_COUNTRY])) {
+                $address->setCountry($json[self::FIELDNAME_COUNTRY]);
+            }
+            if (isset($json[self::FIELDNAME_COORDINATE])) {
+                $coordinate = PCoordinate::addressFromJSON($json[self::FIELDNAME_COORDINATE]);
+                if ($coordinate instanceof PCoordinate) {
+                    $address->setCoordinate($coordinate);
+                }
+            }
+        }
+
+        return $address;
+    }
+
+    /**
      * Sets the street including the house number.
      * @param $street
      * @return PAddress

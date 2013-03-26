@@ -56,7 +56,7 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 				break;
 			}
 		}
-		return CollectionIndexNotFound;
+		return self::CollectionIndexNotFound;
 	}
 	
 	/**
