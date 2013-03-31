@@ -325,7 +325,7 @@ class PString extends PObject {
 	/**
 	 * Splits a string into an array. The returns PArray contains a PString for every compontent.
 	 * @param PString $delimiter
-	 * @return Poundation\PArray
+	 * @return \Poundation\PArray
 	 */
 	public function components($delimiter) {
 		$tmpArray = explode($delimiter,$this->_string);
@@ -659,5 +659,3 @@ class PString extends PObject {
 
 
 }
-
-?>
