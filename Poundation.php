@@ -1,25 +1,18 @@
 <?php
 
-use Poundation\PArray;
+spl_autoload_register(function($className) {
 
-require_once 'PObject.php';
-require_once 'PError.php';
+    $path = dirname(dirname(__FILE__));
 
-require_once 'PString.php';
-require_once 'PCharacterSet.php';
+    $namespace = "Poundation\\";
+    if (substr($className, 0, strlen($namespace)) !== $namespace) {
+        $className = $namespace . $className;
+    }
 
-require_once 'PSet.php';
-require_once 'PDictionary.php';
-require_once 'PArray.php';
+    $filename = str_replace("\\","/", $path . '/' . $className . '.php');
+    include_once($filename);
 
-require_once 'PURL.php';
-require_once 'PMailAddress.php';
-require_once 'Server/PRequest.php';
-
-require_once 'PImage.php';
-
-require_once 'PCoordinate.php';
-require_once 'PAddress.php';
+});
 
 /**
  * Creates a new Poundation String object.
@@ -36,7 +29,7 @@ function __($plainString='') {
  * @return \Poundation\PArray
  */
 function parray($array=false) {
-	return PArray::create($array);
+	return \Poundation\PArray::create($array);
 }
 
 ?>
