@@ -46,7 +46,19 @@ class PString extends PObject {
 		}
 	}
 
-	/**
+    /**
+     * Creates an array with the splited string.
+     * @param int $segmentLength
+     * @return null|PArray
+     */
+    public function toArray($segmentLength = 1) {
+        $segmentLength = max(1.0, min($segmentLength, $this->length()));
+        $nativeArray = str_split($this->_string,$segmentLength);
+        return (is_array($nativeArray) ? parray($nativeArray) : null);
+    }
+
+
+    /**
 	 * Returns the length of the string.
 	 * @return integer
 	 */
@@ -77,6 +89,18 @@ class PString extends PObject {
 			return PString::createFromString(substr($this->_string, $startPosition, $length));
 		}
 	}
+
+    /**
+     * Returns the text between the two given characters.
+     * @param $startCharacter
+     * @param $endCharacter
+     * @return PString
+     */
+    public function substringBetween($startCharacter, $endCharacter) {
+        $beginToEnd = $this->substringToPositionOfString($endCharacter);
+        $startToEnd = $beginToEnd->substringFromPositionOfString($startCharacter);
+        return $startToEnd;
+    }
 
 	/**
 	 * Returns the first character(s) of the string.
@@ -383,7 +407,7 @@ class PString extends PObject {
 	 * @param boolean $caseSensitive
 	 * @return \Poundation\PString
 	 */
-	public function substringFromPositionOfString($string,$caseSensitive=false) {
+	public function substringFromPositionOfString($string, $caseSensitive=false) {
 		if ($caseSensitive) {
 			$pos=strpos($this->_string,$string);
 		} else {
@@ -393,7 +417,7 @@ class PString extends PObject {
 		if ($pos === false) {
 			return __('');
 		} else {
-			return __(substr($this->_string,$pos));
+			return __(substr($this->_string,$pos + 1));
 		}
 	}
 
@@ -578,7 +602,7 @@ class PString extends PObject {
 	
 	/**
 	 * Iterates over every character of the string and executes the given function. The paramters passed in are the character and a boolean indication if the call is the last one.
-	 * @param Closure $function($character,$isLast) 
+	 * @param \Closure $function($character,$isLast)
 	 */
 	public function iterateByCharacter($function) {
 		$length = $this->length();
@@ -605,7 +629,7 @@ class PString extends PObject {
 	 * @return integer
 	 */
 	public function integerValue() {
-		return (int)$this->_string;
+		return intval($this->_string);
 	}
 	
 	/**
@@ -613,7 +637,7 @@ class PString extends PObject {
 	 * @return float
 	 */
 	public function floatValue() {
-		return (float)$this->_string;
+		return floatval($this->_string);
 	}
 	
 	/**
