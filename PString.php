@@ -676,7 +676,7 @@ class PString extends PObject {
         if (empty($text)) {
             return __('n-a');
         }
-        return __($text);
+        return __($text)->trim();
     }
 
 
