@@ -18,9 +18,9 @@ class PSet extends PArray {
 	 * @param $object
 	 * @return Poundation\PSet
 	 */
-	function add($object) {
+	function add($object, $index = -1) {
 		if ($this->contains ( $object ) === false) {
-			$this->map [] = $object;
+			parent::add($object, $index);
 		}
 		return $this;
 	}

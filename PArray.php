@@ -40,9 +40,15 @@ class PArray extends PCollection {
 	/**
 	 * Adds an object to the collection.
 	 * @param $object
+     * @return PArray
 	 */
-	function add($object) {
-		$this->map[] = $object;
+	function add($object, $index = -1) {
+        if (is_integer($index) && $index >= 0) {
+		    $this->map[$index] = $object;
+        } else {
+            $this->map[] = $object;
+        }
+        return $this;
 	}
 	
 	function addArray($array) {
@@ -87,9 +93,11 @@ class PArray extends PCollection {
 	 * @see \Poundation\Collection::offsetSet()
 	 */
 	public function offsetSet($offset, $value) {
-		if ($offset == null) {
-			$this->add($value);
-		} else {
+		if (is_null($offset)) {
+		    $this->add($value);
+		} else if (is_integer($offset) && $offset >= 0) {
+            $this->add($value, $offset);
+        } else {
 			throw new \Exception('Array cannot handle a key.',100,null);
 		}
 	}
