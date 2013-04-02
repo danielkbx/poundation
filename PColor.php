@@ -243,7 +243,7 @@ class PColor extends PObject implements \JsonSerializable
         foreach ($components as $component) {
             if ($component instanceof PString) {
                 if ($component->length() == 1) {
-                    $component->prependString('0');
+                    $component = $component->prependString('0');
                 }
 
                 if ($component->length() == 2) {
