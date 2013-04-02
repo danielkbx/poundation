@@ -257,6 +257,6 @@ class PColor extends PObject implements \JsonSerializable
             }
         }
 
-        return ($useShortHex) ? $shortHex : $hex;
+        return ($preferShortVersion && $useShortHex) ? $shortHex : $hex;
     }
 }
