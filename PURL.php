@@ -5,7 +5,9 @@ class PURL extends PObject implements \JsonSerializable {
 
 	const SCHEME_HTTP = 'http';
 	const SCHEME_HTTPS = 'https';
-	
+
+    private $fullyConstructed;
+
 	/**
 	 * @var PString
 	 */
@@ -56,7 +58,7 @@ class PURL extends PObject implements \JsonSerializable {
      */
     public static function isValidURLString($urlString) {
         $url = self::URLWithString($urlString);
-        return ($url instanceof PURL);
+        return ($url instanceof PURL && $url->fullyConstructed);
     }
 
 	/**
@@ -70,6 +72,7 @@ class PURL extends PObject implements \JsonSerializable {
 		
 		$this->URLString = $URLString;
 		$components = $this->URLString->components(':');
+        $this->fullyConstructed = false;
 		switch ($components->count()) {
 			case 0:
 				$this->scheme = __('');
@@ -77,7 +80,7 @@ class PURL extends PObject implements \JsonSerializable {
 				$this->port = 0;
 				break;
 			case 1:
-				$this->scheme = self::SCHEME_HTTP;
+				$this->scheme = __(self::SCHEME_HTTP);
 				$this->host = $components->firstObject()->removeLeadingCharactersWhenMatching('//');
 				$this->port = 0;
 				break;
@@ -87,6 +90,7 @@ class PURL extends PObject implements \JsonSerializable {
 				$this->host = $host->substringToPositionOfString('/');
 				$this->path = $host->substringFromPositionOfString('/');
 				$this->port = 0;
+                $this->fullyConstructed = true;
 				break;
 			default:
 				$this->scheme = $components->firstObject();
@@ -108,7 +112,9 @@ class PURL extends PObject implements \JsonSerializable {
 						$this->path = $portsAndPathComponents->string('/');
 						break;
 				}
-				
+
+                $this->fullyConstructed = true;
+
 				break;
 		}
 			
