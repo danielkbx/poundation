@@ -219,7 +219,7 @@ class PURL extends PObject implements \JsonSerializable {
 		}
 		
 		if ($pathToUse !== false) {
-			if (!$this->path->hasPrefix('/')) {
+			if (!$this->path->hasSuffix('/')) {
 				$this->path->addString('/');
 			}
 			$this->path->addString($path);
