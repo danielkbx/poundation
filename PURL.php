@@ -217,6 +217,10 @@ class PURL extends PObject implements \JsonSerializable {
 				$pathToUse = $path->stringValue();
 			}
 		}
+
+		if (is_null($this->path)) {
+			$this->path = __('');
+		}
 		
 		if ($pathToUse !== false) {
 			if (!$this->path->hasSuffix('/')) {
