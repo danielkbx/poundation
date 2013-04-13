@@ -39,6 +39,16 @@ class PCoordinate extends PObject implements \JsonSerializable  {
     }
 
     /**
+     * Returns the Coordinates comma separated.
+     * Latitude,Longitude
+     * @return string
+     */
+    public function getCommaSeparatedLatLon()
+    {
+        return $this->getLongitude().','.$this->getLatitude();
+    }
+
+    /**
      * (PHP 5 >= 5.4.0)
      * Serializes the object to a value that can be serialized natively by json_encode().
      * @link http://docs.php.net/manual/en/jsonserializable.jsonserialize.php
