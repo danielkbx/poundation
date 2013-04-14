@@ -37,7 +37,7 @@ class PString extends PObject {
 	/**
 	 * Creates a new string object with the given String.
 	 *
-	 * @param $aString
+	 * @param string $aString
 	 *
 	 * @return \Poundation\PString
 	 */
@@ -311,7 +311,7 @@ class PString extends PObject {
 	/**
 	 * Removes the trailing characters if they match the given the string.
 	 *
-	 * @param PString $char
+	 * @param PString|string $char
 	 *
 	 * @return \Poundation\PString
 	 */

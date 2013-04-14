@@ -77,7 +77,7 @@ class PClass extends PObject {
 	
 	/**
 	 * Determines if the class inherits from the given class or is the given class.
-	 * @param PClass $class
+	 * @param PClass|string $class
 	 * @throws \Exception
 	 * @return boolean
 	 */
