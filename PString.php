@@ -19,7 +19,7 @@ class PString extends PObject {
 	}
 
 	public function __toString() {
-		return $this->_string;
+		return ($this->_string) ? $this->_string : '';
 	}
 
 	/**

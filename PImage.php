@@ -5,7 +5,8 @@ namespace Poundation;
 use Poundation\Server\PConfig;
 use Poundation\PString;
 
-class PImage extends PObject {
+class PImage extends PObject
+{
 
 	const RESIZE_AUTO      = 'auto';
 	const RESIZE_EXACT     = 'exact';
@@ -30,7 +31,8 @@ class PImage extends PObject {
 	 *
 	 * @return null|PImage
 	 */
-	static function createImageFromString($data, $name) {
+	static function createImageFromString($data, $name)
+	{
 		$image = null;
 		if (is_string($data) && strlen($data) > 0) {
 
@@ -54,7 +56,8 @@ class PImage extends PObject {
 	 *
 	 * @return null|string
 	 */
-	static function hashFromFilename($filename) {
+	static function hashFromFilename($filename)
+	{
 		$hash = null;
 
 		if (file_exists($filename)) {
@@ -64,7 +67,8 @@ class PImage extends PObject {
 		return $hash;
 	}
 
-	private function setImage($image) {
+	private function setImage($image)
+	{
 		if (is_resource($image)) {
 			$this->image = $image;
 			$this->data  = null;
@@ -80,7 +84,8 @@ class PImage extends PObject {
 	 *
 	 * @return null|PImage
 	 */
-	static function createImageFromFilename($filename, $name = false) {
+	static function createImageFromFilename($filename, $name = false)
+	{
 		$image = null;
 
 		if (file_exists($filename)) {
@@ -107,92 +112,83 @@ class PImage extends PObject {
 	 *
 	 * @param PURL $url
 	 */
-	static function createFromUrl(\Poundation\PURL $url, $filename = false) {
-		if (!$url instanceof PURL) {
-			return null;
-		}
+	static function createFromURL(\Poundation\PURL $url, $filename = null)
+	{
 
-		$hasExtension = false;
-		$mimeType     = null;
-		$extension    = null;
-		$data         = null;
-		$image        = null;
+		$image = null;
 
-		if ($filename === false) {
+		if (PConfig::isCurlEnabled()) {
 
-			$pathInfo = pathinfo($url->path());
-			if (isset($pathInfo['extension']) && ($pathInfo['extension'] == 'png' || $pathInfo['extension'] == 'gif' || $pathInfo['extension'] == 'jpg' || $pathInfo['extension'] == 'jpeg')
-			) {
-				// seems to be an image file
-				$filename = $pathInfo['filename'] . '.' . $pathInfo['extension'];
+			$curl = curl_init((string)$url);
 
-				$extension = $pathInfo['extension'];
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HEADER, false);
 
+			$binary       = curl_exec($curl);
+			$statusCode   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+			$contentType  = __(curl_getinfo($curl, CURLINFO_CONTENT_TYPE));
+			$effectiveURL = PURL::URLWithString(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+
+			curl_close($curl);
+
+			if ($statusCode == 200) {
+				if (strlen($binary) > 0) {
+
+					if (is_null($filename)) {
+						$filename = null;
+						// filename determination
+						if ($effectiveURL) {
+							$pathComponents = $effectiveURL->pathComponents();
+							if ($pathComponents) {
+								$filename = $pathComponents->lastObject();
+							}
+						}
+
+						// if the URL does not contain a filename we generate a unique one
+						if (is_null($filename)) {
+							$filename = (string)PString::createUUID();
+						}
+
+						// checking the mime type
+						$MIME = __(PMIME::getTypeForFilename($filename));
+						if (!$MIME->hasPrefix('image')) {
+							// since the filename indicates no image we check the header
+							if ($contentType->hasPrefix('image')) {
+								$MIME = $contentType;
+							}
+
+							// concating the filename and the extension
+							$filename .= '.' . PMIME::getExtensionForType($MIME);
+						}
+					}
+
+					if (!is_null($filename)) {
+						// finally, create the image
+						$image = self::createImageFromString($binary, $filename);
+					}
+				}
 			} else {
-				$filename = PString::createUUID();
+				throw new \Exception('Received HTTP status ' . $statusCode);
 			}
-		}
-
-		if (PConfig::curlEnabled()) {
-
-			$ch = curl_init($url);
-
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HEADER, true);
-
-			$result = curl_exec($ch);
-			list($headers, $data) = explode("\r\n\r\n", $result, 2);
-
-			$header = curl_getinfo($ch);
-			curl_close($ch);
-
-			if (isset($header['content_type'])) {
-				$mimeType = $header['content_type'];
-			}
-			;
 
 		} else {
-			if (PConfig::allowURLFOpen()) {
-				$data = file_get_contents($url);
-			} else {
-				throw new Exception('Server not able to fetch image. Check php.ini for allow_url_fopen or curl', 500);
-			}
+			throw new \Exception('cURL extension missing.', 500);
 		}
-
-		if (is_null($mimeType) && is_null($extension)) {
-
-			// We need to safe the image temporary to get the mime type
-			$img = fopen('/tmp/' . $filename, 'rw');
-			fwrite($img, $data);
-			fclose($img);
-			$imageData = getImageSize($img);
-			if (!$imageData) {
-				return null;
-			}
-			$mimeType = $imageData['mime'];
-
-		}
-
-		if (is_null($extension) && !is_null($mimeType)) {
-			// create extension from mime-type
-			$extension = self::getExtensionForMimeType($mimeType);
-			$filename  = $filename . '.' . $extension;
-		}
-
-		$image = @self::createImageFromString($data, $filename);
 
 		return $image;
 
 	}
 
 
-	private function importString($string) {
+	private function importString($string)
+	{
 		$this->image = imagecreatefromstring($string);
 
 		return (is_resource($this->image));
 	}
 
-	public function getLength() {
+	public function getLength()
+	{
 		return strlen($this->getData());
 	}
 
@@ -201,7 +197,8 @@ class PImage extends PObject {
 	 *
 	 * @return string
 	 */
-	public function getData() {
+	public function getData()
+	{
 		if ($this->data == null && is_resource($this->image)) {
 			ob_start();
 			$mime = $this->getMIME();
@@ -224,7 +221,8 @@ class PImage extends PObject {
 	 *
 	 * @return string
 	 */
-	public function getHash() {
+	public function getHash()
+	{
 		if ($this->hash == null) {
 			$this->hash = md5($this->getData());
 		}
@@ -237,15 +235,18 @@ class PImage extends PObject {
 	 *
 	 * @return string
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->name;
 	}
 
-	public function getExtension() {
+	public function getExtension()
+	{
 		return strtolower(pathinfo($this->getName(), PATHINFO_EXTENSION));
 	}
 
-	public function setName($name) {
+	public function setName($name)
+	{
 		$extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
 		if ($extension !== $this->getExtension()) {
 			_logger()->warn('Setting a new name (' . $name . ') on a content image (' . $this->getName() . ') but the extension does not match.');
@@ -258,7 +259,8 @@ class PImage extends PObject {
 	 *
 	 * @return int
 	 */
-	public function getWidth() {
+	public function getWidth()
+	{
 		if (is_resource($this->image)) {
 			return imagesx($this->image);
 		}
@@ -271,7 +273,8 @@ class PImage extends PObject {
 	 *
 	 * @return int
 	 */
-	public function getHeight() {
+	public function getHeight()
+	{
 		if (is_resource($this->image)) {
 			return imagesy($this->image);
 		}
@@ -279,13 +282,14 @@ class PImage extends PObject {
 		return 0;
 	}
 
-	public function resize($newWidth, $newHeight, $option = self::RESIZE_AUTO) {
+	public function resize($newWidth, $newHeight, $option = self::RESIZE_AUTO)
+	{
 
 		// Get optimal width and height - based on $option
 		$optionArray = $this->getDimensions($newWidth, $newHeight, strtolower($option));
 
-		$optimalWidth  = round($optionArray['optimalWidth'],0);
-		$optimalHeight = round($optionArray['optimalHeight'],0);
+		$optimalWidth  = round($optionArray['optimalWidth'], 0);
+		$optimalHeight = round($optionArray['optimalHeight'], 0);
 
 		// Resample - create image canvas of x, y size
 		$this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
@@ -310,7 +314,8 @@ class PImage extends PObject {
 		return $success;
 	}
 
-	private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight) {
+	private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight)
+	{
 		// Find center - this will be used for the crop
 		$cropStartX = ($optimalWidth / 2) - ($newWidth / 2);
 		$cropStartY = ($optimalHeight / 2) - ($newHeight / 2);
@@ -326,7 +331,8 @@ class PImage extends PObject {
 		imagecopyresampled($this->imageResized, $crop, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
 	}
 
-	private function getDimensions($newWidth, $newHeight, $option) {
+	private function getDimensions($newWidth, $newHeight, $option)
+	{
 
 		switch ($option) {
 			case self::RESIZE_EXACT:
@@ -352,26 +358,30 @@ class PImage extends PObject {
 				$optimalHeight = $optionArray['optimalHeight'];
 				break;
 		}
-		return array('optimalWidth'  => $optimalWidth,
-					 'optimalHeight' => $optimalHeight
+		return array(
+			'optimalWidth'  => $optimalWidth,
+			'optimalHeight' => $optimalHeight
 		);
 	}
 
-	private function getSizeByFixedHeight($newHeight) {
+	private function getSizeByFixedHeight($newHeight)
+	{
 		$ratio    = $this->getWidth() / $this->getHeight();
 		$newWidth = $newHeight * $ratio;
 
 		return $newWidth;
 	}
 
-	private function getSizeByFixedWidth($newWidth) {
+	private function getSizeByFixedWidth($newWidth)
+	{
 		$ratio     = $this->getHeight() / $this->getWidth();
 		$newHeight = $newWidth * $ratio;
 
 		return $newHeight;
 	}
 
-	private function getSizeByAuto($newWidth, $newHeight) {
+	private function getSizeByAuto($newWidth, $newHeight)
+	{
 		if ($this->getHeight() < $this->getWidth()) {
 			// Image to be resized is wider (landscape)
 			$optimalWidth  = $newWidth;
@@ -395,12 +405,14 @@ class PImage extends PObject {
 			}
 		}
 
-		return array('optimalWidth'  => $optimalWidth,
-					 'optimalHeight' => $optimalHeight
+		return array(
+			'optimalWidth'  => $optimalWidth,
+			'optimalHeight' => $optimalHeight
 		);
 	}
 
-	private function getOptimalCrop($newWidth, $newHeight) {
+	private function getOptimalCrop($newWidth, $newHeight)
+	{
 
 		$heightRatio = $this->getHeight() / $newHeight;
 		$widthRatio  = $this->getWidth() / $newWidth;
@@ -414,171 +426,25 @@ class PImage extends PObject {
 		$optimalHeight = $this->getHeight() / $optimalRatio;
 		$optimalWidth  = $this->getWidth() / $optimalRatio;
 
-		return array('optimalWidth'  => $optimalWidth,
-					 'optimalHeight' => $optimalHeight
+		return array(
+			'optimalWidth'  => $optimalWidth,
+			'optimalHeight' => $optimalHeight
 		);
 	}
 
-	public function isPNG() {
+	public function isPNG()
+	{
 		return ($this->getMIME() == 'image/png');
 	}
 
-	public function isJPG() {
+	public function isJPG()
+	{
 		return ($this->getMIME() == 'image/jpeg');
 	}
 
-	/**
-	 * Returns the MIME type of the image.
-	 *
-	 * @return string
-	 */
-	public function getMIME() {
-
-		$mime = "application/octet-stream";
-
-		$extension = $this->getExtension();
-
-		if (is_string($this->name)) {
-
-			switch ($extension) {
-				case "bmp":
-					$mime = "image/bmp";
-					break;
-				case "gif":
-					$mime = "image/gif";
-					break;
-				case "ief":
-					$mime = "image/ief";
-					break;
-				case "jpeg":
-					$mime = "image/jpeg";
-					break;
-				case "jpg":
-					$mime = "image/jpeg";
-					break;
-				case "jpe":
-					$mime = "image/jpeg";
-					break;
-				case "png":
-					$mime = "image/png";
-					break;
-				case "tiff":
-					$mime = "image/tiff";
-					break;
-				case "tif":
-					$mime = "image/tiff";
-					break;
-				case "djvu":
-					$mime = "image/vnd.djvu";
-					break;
-				case "djv":
-					$mime = "image/vnd.djvu";
-					break;
-				case "wbmp":
-					$mime = "image/vnd.wap.wbmp";
-					break;
-				case "ras":
-					$mime = "image/x-cmu-raster";
-					break;
-				case "pnm":
-					$mime = "image/x-portable-anymap";
-					break;
-				case "pbm":
-					$mime = "image/x-portable-bitmap";
-					break;
-				case "pgm":
-					$mime = "image/x-portable-graymap";
-					break;
-				case "ppm":
-					$mime = "image/x-portable-pixmap";
-					break;
-				case "rgb":
-					$mime = "image/x-rgb";
-					break;
-				case "xbm":
-					$mime = "image/x-xbitmap";
-					break;
-				case "xpm":
-					$mime = "image/x-xpixmap";
-					break;
-				case "xwd":
-					$mime = "image/x-xwindowdump";
-					break;
-			}
-		}
-
-		return $mime;
+	public function getMIME()
+	{
+		return PMIME::getTypeForExtension($this->getName());
 	}
 
-	static function getExtensionForMimeType($mime) {
-
-		switch ($mime) {
-			case "image/bmp":
-				$extension = "bmp";
-				break;
-			case "image/gif":
-				$extension = "gif";
-				break;
-			case "image/ief":
-				$extension = "ief";
-				break;
-			case "image/jpeg":
-				$extension = "jpeg";
-				break;
-			case "image/jpg":
-				$extension = "jpeg";
-				break;
-			case "image/jpe":
-				$extension = "jpeg";
-				break;
-			case "image/png":
-				$extension = "png";
-				break;
-			case "image/tiff":
-				$extension = "tiff";
-				break;
-			case "image/tiff":
-				$extension = "tiff";
-				break;
-			case "image/vnd.djvu":
-				$extension = "djvu";
-				break;
-			case "image/vnd.djv":
-				$extension = "djv";
-				break;
-			case "image/vnd.wap.wbmp":
-				$extension = "wbmp";
-				break;
-			case "image/x-cmu-raster":
-				$extension = "ras";
-				break;
-			case "image/x-portable-anymap":
-				$extension = "pnm";
-				break;
-			case "image/x-portable-bitmap":
-				$extension = "pbm";
-				break;
-			case "image/x-portable-graymap":
-				$extension = "pgm";
-				break;
-			case "image/x-portable-pixmap":
-				$extension = "ppm";
-				break;
-			case "image/x-rgb":
-				$extension = "rgb";
-				break;
-			case "image/x-xbitmap":
-				$extension = "xbm";
-				break;
-			case "image/x-xpixmap":
-				$extension = "xpm";
-				break;
-			case "image/x-xwindowdump":
-				$extension = "xwd";
-				break;
-			default:
-				$extension = null;
-		}
-		return $extension;
-	}
 }

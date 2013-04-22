@@ -2,14 +2,16 @@
 
 namespace Poundation;
 
-class PMIME extends \PObject {
+class PMIME extends PObject
+{
 
 	private static $mapInstance;
 
 	private $fileExtension = null;
 	private $type = null;
 
-	private function getTypesMap() {
+	private function getTypesMap()
+	{
 
 		if (self::$mapInstance == null) {
 			$map               = array(
@@ -234,12 +236,13 @@ class PMIME extends \PObject {
 	 *
 	 * @return PMIME
 	 */
-	public static function createMIMEWithType($type) {
+	public static function createMIMEWithType($type)
+	{
 
 		$typeObject                = new PMIME();
 		$extension                 = $typeObject->_getExtensionForType($type);
 		$typeObject->fileExtension = $extension;
-		$typeObject->type = $type;
+		$typeObject->type          = $type;
 
 		return $typeObject;
 	}
@@ -251,10 +254,11 @@ class PMIME extends \PObject {
 	 *
 	 * @return PMIME
 	 */
-	public static function createMIMEWithFileExtension($extension) {
+	public static function createMIMEWithFileExtension($extension)
+	{
 		$typeObject                = new PMIME();
 		$typeObject->fileExtension = (string)$extension;
-		$typeObject->type = $typeObject->_getTypeForExtension($extension);
+		$typeObject->type          = $typeObject->_getTypeForExtension($extension);
 
 		return $typeObject;
 	}
@@ -266,10 +270,32 @@ class PMIME extends \PObject {
 	 *
 	 * @return string
 	 */
-	public static function getTypeForExtension($extension) {
+	public static function getTypeForExtension($extension)
+	{
 		$object = self::createMIMEWithFileExtension($extension);
 
 		return $object->getMIMEType();
+	}
+
+	/**
+	 * Returns matching type of the given filename.
+	 *
+	 * @param $filename
+	 *
+	 * @return null|string
+	 */
+	public static function getTypeForFilename($filename)
+	{
+
+		$type = null;
+
+		$extension = pathinfo($filename, PATHINFO_EXTENSION);
+		if ($extension) {
+			$type = self::getTypeForExtension($extension);
+		}
+
+		return $type;
+
 	}
 
 	/**
@@ -279,7 +305,8 @@ class PMIME extends \PObject {
 	 *
 	 * @return string
 	 */
-	public static function getExtensionForType($type) {
+	public static function getExtensionForType($type)
+	{
 		$object = self::createMIMEWithType($type);
 
 		return $object->getExtension();
@@ -290,7 +317,8 @@ class PMIME extends \PObject {
 	 *
 	 * @return string
 	 */
-	public function getMIMEType() {
+	public function getMIMEType()
+	{
 		return $this->type;
 	}
 
@@ -299,12 +327,14 @@ class PMIME extends \PObject {
 	 *
 	 * @return string
 	 */
-	public function getExtension() {
+	public function getExtension()
+	{
 		return $this->fileExtension;
 	}
 
-	public function __construct($type = null, $extension = null) {
-		$this->type = $type;
+	public function __construct($type = null, $extension = null)
+	{
+		$this->type          = $type;
 		$this->fileExtension = $extension;
 
 		if (is_null($this->type)) {
@@ -316,16 +346,20 @@ class PMIME extends \PObject {
 		}
 	}
 
-	private function _getTypeForExtension($extension) {
+	private function _getTypeForExtension($extension)
+	{
 		$map = $this->getTypesMap();
+
 		return (isset($map[$extension])) ? $map[$extension] : 'application/octet-stream';
 	}
 
-	private function _getExtensionForType($type) {
+	private function _getExtensionForType($type)
+	{
 		$extension = array_search((string)$type, $this->getTypesMap());
 		if ($extension === false) {
 			$extension = '';
 		}
+
 		return $extension;
 	}
 
