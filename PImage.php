@@ -284,8 +284,8 @@ class PImage extends PObject {
 		// Get optimal width and height - based on $option
 		$optionArray = $this->getDimensions($newWidth, $newHeight, strtolower($option));
 
-		$optimalWidth  = $optionArray['optimalWidth'];
-		$optimalHeight = $optionArray['optimalHeight'];
+		$optimalWidth  = round($optionArray['optimalWidth'],0);
+		$optimalHeight = round($optionArray['optimalHeight'],0);
 
 		// Resample - create image canvas of x, y size
 		$this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
@@ -297,7 +297,9 @@ class PImage extends PObject {
 
 		// if option is 'crop', then crop too
 		if ($option == self::RESIZE_CROP) {
-			$this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight);
+			if ($newWidth != $optimalWidth || $newHeight != $optimalHeight) {
+				$this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight);
+			}
 		}
 
 		$success = (!is_null($this->imageResized));
