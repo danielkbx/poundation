@@ -84,7 +84,7 @@ class PImage extends PObject
 	 *
 	 * @return null|PImage
 	 */
-	static function createImageFromFilename($filename, $name = false)
+	static public function createImageFromFilename($filename, $name = false)
 	{
 		$image = null;
 
@@ -110,9 +110,10 @@ class PImage extends PObject
 	/**
 	 * Creates an image from a given URL
 	 *
-	 * @param PURL $url
+	 * @param PURL   $url
+	 * @param string $filename If a filename is given it is used for MIME checks and as the image's filename.
 	 */
-	static function createFromURL(\Poundation\PURL $url, $filename = null)
+	static public function createImageFromURL(\Poundation\PURL $url, $filename = null)
 	{
 
 		$image = null;
@@ -182,11 +183,16 @@ class PImage extends PObject
 
 	private function importString($string)
 	{
-		$this->image = imagecreatefromstring($string);
+		$this->image = @imagecreatefromstring($string);
 
 		return (is_resource($this->image));
 	}
 
+	/**
+	 * Returns the number of bytes the current image representation has.
+	 *
+	 * @return int
+	 */
 	public function getLength()
 	{
 		return strlen($this->getData());
@@ -203,7 +209,7 @@ class PImage extends PObject
 			ob_start();
 			$mime = $this->getMIME();
 
-			if ($this->isPNG()) {
+			if ($this->_isPNG()) {
 				imagepng($this->image, null, 4);
 			} else {
 				imagejpeg($this->image, null, 90);
@@ -240,16 +246,17 @@ class PImage extends PObject
 		return $this->name;
 	}
 
-	public function getExtension()
-	{
-		return strtolower(pathinfo($this->getName(), PATHINFO_EXTENSION));
-	}
-
+	/**
+	 * Sets the name of the image. Changing the extension of the image results in a warning.
+	 *
+	 * @param $name
+	 */
 	public function setName($name)
 	{
-		$extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-		if ($extension !== $this->getExtension()) {
-			_logger()->warn('Setting a new name (' . $name . ') on a content image (' . $this->getName() . ') but the extension does not match.');
+		$currentExtension = strtolower(pathinfo($this->getName(), PATHINFO_EXTENSION));
+		$extension        = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+		if ($extension !== $currentExtension) {
+			trigger_error('Setting a new name (' . $name . ') on a content image (' . $this->getName() . ') but the extension does not match.', E_USER_WARNING);
 		}
 		$this->name = $name;
 	}
@@ -282,6 +289,22 @@ class PImage extends PObject
 		return 0;
 	}
 
+	/**
+	 * Resizes the image to the given dimensions. Based on Jarrod Oberto's image class, see http://net.tutsplus.com/tutorials/php/image-resizing-made-easy-with-php/.
+	 * Returns true if resizing was successful.
+	 *
+	 * RESIZE_AUTO - chooses the best mode
+	 * RESIZE_EXACT - resizes the image to the very exact pixels
+	 * RESIZE_BY_WIDTH - resizes the image to the given width and preserved the image ratio by calculating the height
+	 * RESIZE_BY_HEIGHT - resizes the image to the given height and preserved the image ratio by calculating the width
+	 * RESIZE_CROP - resizes the image to the given width and height croping it after optimal resizing
+	 *
+	 * @param        $newWidth
+	 * @param        $newHeight
+	 * @param string $option
+	 *
+	 * @return bool
+	 */
 	public function resize($newWidth, $newHeight, $option = self::RESIZE_AUTO)
 	{
 
@@ -293,7 +316,7 @@ class PImage extends PObject
 
 		// Resample - create image canvas of x, y size
 		$this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
-		if ($this->isPNG()) {
+		if ($this->_isPNG()) {
 			imagealphablending($this->imageResized, false);
 			imagesavealpha($this->imageResized, true);
 		}
@@ -324,7 +347,7 @@ class PImage extends PObject
 
 		// *** Now crop from center to exact requested size
 		$this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
-		if ($this->isPNG()) {
+		if ($this->_isPNG()) {
 			imagealphablending($this->imageResized, false);
 			imagesavealpha($this->imageResized, true);
 		}
@@ -432,16 +455,21 @@ class PImage extends PObject
 		);
 	}
 
-	public function isPNG()
+	private function _isPNG()
 	{
 		return ($this->getMIME() == 'image/png');
 	}
 
-	public function isJPG()
+	private function _isJPG()
 	{
 		return ($this->getMIME() == 'image/jpeg');
 	}
 
+	/**
+	 * Returns the MIME type of the image (based on the name).
+	 *
+	 * @return string
+	 */
 	public function getMIME()
 	{
 		return PMIME::getTypeForExtension($this->getName());
