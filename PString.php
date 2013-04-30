@@ -15,7 +15,7 @@ class PString extends PObject {
 	private $_string = '';
 
 	function __construct($plainString = '') {
-		$this->_string = $plainString;
+		$this->_string = (string)$plainString;
 	}
 
 	public function __toString() {

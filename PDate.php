@@ -332,6 +332,12 @@ class PDate extends PObject implements \JsonSerializable {
 		return ($this->data) ? $this->getDateTime()->format(\DateTime::ISO8601) : null;
 	}
 
+	/**
+	 * Returns a formated string. See date command for valid format strings.
+	 * @param $format
+	 *
+	 * @return string
+	 */
 	public function getFormatedString($format) {
 		return $this->data->format($format);
 	}
