@@ -332,6 +332,10 @@ class PMIME extends PObject
 		return $this->fileExtension;
 	}
 
+	public function isImage() {
+		return (PString::createFromString($this->getMIMEType())->first(strlen('image')) == 'image');
+	}
+
 	public function __construct($type = null, $extension = null)
 	{
 		$this->type          = $type;
