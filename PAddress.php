@@ -155,7 +155,7 @@ class PAddress extends \Poundation\PObject implements \JsonSerializable {
 
     /**
      * Returns the coordinate object.
-     * @return null|\PCoordinate
+     * @return null|PCoordinate
      */
     public function getCoordinate() {
         return $this->coordinate;
@@ -179,5 +179,33 @@ class PAddress extends \Poundation\PObject implements \JsonSerializable {
         $this->coordinate = null;
         return $this;
     }
+
+	public function __toString() {
+
+		$data = array();
+
+		if ($this->street) {
+			$data[] = $this->street;
+		}
+
+		$city = '';
+		if ($this->zip) {
+			$city = $this->zip;
+		}
+
+		if ($this->city) {
+			$city.= ' ' . $this->city;
+		}
+
+		$data[] = trim($city);
+
+		if ($this->country) {
+			$data[] = $this->country;
+		}
+
+
+		return implode(',', $data);
+
+	}
 
 }
