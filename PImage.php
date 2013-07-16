@@ -472,7 +472,8 @@ class PImage extends PObject
 	 */
 	public function getMIME()
 	{
-		return PMIME::getTypeForExtension($this->getName());
+		$extension = $ext = pathinfo($this->getName(), PATHINFO_EXTENSION);
+		return PMIME::getTypeForExtension($extension);
 	}
 
 }
