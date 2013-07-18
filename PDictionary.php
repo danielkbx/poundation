@@ -39,6 +39,24 @@ class PDictionary extends PCollection {
 			unset($this->map[$key]);
 		}
 	}
+
+	/**
+	 * Removes the given value object.
+	 * @param $value
+	 */
+	public function removeValue($value) {
+		$keyToRemove = null;
+		foreach($this->map as $key => $object) {
+			if ($value === $object) {
+				$keyToRemove = $key;
+				break;
+			}
+		}
+
+		if (!is_null($keyToRemove)) {
+			$this->removeValueForKey($keyToRemove);
+		}
+	}
 	
 	/**
 	 * Returns the value assoziated with the given key.

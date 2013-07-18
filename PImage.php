@@ -95,12 +95,53 @@ class PImage extends PObject
 				$fileSize = (isset($fileInfo['size']) ? (int)$fileInfo['size'] : 0);
 
 				if ($fileSize > 0) {
-					$binary = fread($fileHandle, $fileSize);
-					if ($name === false) {
-						$name  = basename($filename);
-						$image = self::createImageFromString($binary, $name);
+
+					$dbFilename = null;
+					$imageType  = null;
+
+					if (function_exists('exif_imagetype2')) {
+						$imageType = exif_imagetype($filename);
+					} else if ((list($width, $height, $type, $attr) = getimagesize($filename)) !== false) {
+						$imageType = $type;
+					}
+
+					if (!is_null($imageType)) {
+						$extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+						switch ($imageType) {
+							case IMAGETYPE_JPEG:
+								$extension = 'jpg';
+								break;
+							case IMAGETYPE_PNG:
+								$extension = 'png';
+								break;
+							case IMAGETYPE_WBMP:
+								$extension = 'wbmp';
+								break;
+							case IMAGETYPE_GIF:
+								$extension = 'gif';
+								break;
+						}
+
+						$dbFilename = pathinfo($filename, PATHINFO_FILENAME) . '.' . $extension;
+
+					} else {
+
+						$extension = pathinfo($dbFilename, PATHINFO_EXTENSION);
+						$mime      = PMIME::createMIMEWithFileExtension($extension);
+						if ($mime->isImage()) {
+							$dbFilename = basename($filename);
+						}
+					}
+
+					if (!is_null($dbFilename)) {
+						$binary = fread($fileHandle, $fileSize);
+						if ($name === false) {
+							$image = self::createImageFromString($binary, $dbFilename);
+						}
 					}
 				}
+
 			}
 		}
 
@@ -500,6 +541,7 @@ class PImage extends PObject
 	public function getMIME()
 	{
 		$extension = pathinfo($this->getName(), PATHINFO_EXTENSION);
+
 		return PMIME::getTypeForExtension($extension);
 	}
 
