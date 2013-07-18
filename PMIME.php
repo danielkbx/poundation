@@ -256,6 +256,7 @@ class PMIME extends PObject
 	 */
 	public static function createMIMEWithFileExtension($extension)
 	{
+		$extension = strtolower((string)$extension);
 		$typeObject                = new PMIME();
 		$typeObject->fileExtension = (string)$extension;
 		$typeObject->type          = $typeObject->_getTypeForExtension($extension);

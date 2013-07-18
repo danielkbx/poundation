@@ -203,16 +203,43 @@ class PImage extends PObject
 	 *
 	 * @return string
 	 */
-	public function getData()
+	public function getData($mime = null)
 	{
-		if ($this->data == null && is_resource($this->image)) {
-			ob_start();
-			$mime = $this->getMIME();
+		if (!is_null($mime) && !$mime instanceof PMIME) {
+			if (is_string($mime)) {
+				$mime = PMIME::createMIMEWithType($mime);
+				if (is_null($mime)) {
+					$mime = PMIME::createMIMEWithFileExtension($mime);
+				}
 
-			if ($this->_isPNG()) {
-				imagepng($this->image, null, 4);
-			} else {
-				imagejpeg($this->image, null, 90);
+				if (is_null($mime)) {
+					return null;
+				}
+			}
+		}
+
+		if (!$mime instanceof PMIME) {
+			$mime = PMIME::createMIMEWithType($this->getMIME());
+		}
+
+		$requestedMime = $mime->getMIMEType();
+		$existingMime  = $this->getMIME();
+
+		if ($requestedMime != $existingMime || ($this->data == null && is_resource($this->image))) {
+
+			ob_start();
+
+			if ($mime->isImage()) {
+				$extension = $mime->getExtension();
+				if ($extension == 'jpg' || $extension == 'jpeg') {
+					imagejpeg($this->image, null, 90);
+				} else if ($extension == 'gif') {
+					imagegif($this->image);
+				} else if ($extension == 'bmp' || $extension = 'wbmp') {
+					imagewbmp($this->image);
+				} else {
+					imagepng($this->image, null, 4);
+				}
 			}
 
 			$this->data = ob_get_contents();
@@ -472,7 +499,7 @@ class PImage extends PObject
 	 */
 	public function getMIME()
 	{
-		$extension = $ext = pathinfo($this->getName(), PATHINFO_EXTENSION);
+		$extension = pathinfo($this->getName(), PATHINFO_EXTENSION);
 		return PMIME::getTypeForExtension($extension);
 	}
 
