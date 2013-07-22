@@ -276,7 +276,7 @@ class PImage extends PObject
 					imagejpeg($this->image, null, 90);
 				} else if ($extension == 'gif') {
 					imagegif($this->image);
-				} else if ($extension == 'bmp' || $extension = 'wbmp') {
+				} else if ($extension == 'bmp' || $extension == 'wbmp') {
 					imagewbmp($this->image);
 				} else {
 					imagepng($this->image, null, 4);
