@@ -25,6 +25,13 @@ class PString extends PObject
 		return $this->_string;
 	}
 
+	public static function createHumanReadableSizeString($bytes, $numberOfDigits = 1)
+	{
+		$sz     = 'BKMGTP';
+		$factor = floor((strlen($bytes) - 1) / 3);
+		return self::createFromString(sprintf("%.{$numberOfDigits}f", $bytes / pow(1024, $factor)) . @$sz[$factor]);
+	}
+
 	/**
 	 * Creates a new string with a UUID.
 	 *
@@ -344,7 +351,9 @@ class PString extends PObject
 	 */
 	public function removeTrailingCharactersWhenMatching($char)
 	{
-		if ($char instanceof PString) $char = $char->__toString();
+		if ($char instanceof PString) {
+			$char = $char->__toString();
+		}
 		if (strlen($char) == 0) {
 			return $this;
 		} else {
@@ -367,7 +376,9 @@ class PString extends PObject
 	{
 		if ($length <= $this->length()) {
 			return $this->substring(0, $this->length() - $length);
-		} else return PString::createFromString('');
+		} else {
+			return PString::createFromString('');
+		}
 	}
 
 	/**
@@ -379,7 +390,9 @@ class PString extends PObject
 	 */
 	public function removeLeadingCharactersWhenMatching($char)
 	{
-		if ($char instanceof PString) $char = $char->__toString();
+		if ($char instanceof PString) {
+			$char = $char->__toString();
+		}
 		if (strlen($char) == 0) {
 			return $this;
 		} else {
@@ -402,7 +415,9 @@ class PString extends PObject
 	{
 		if ($length <= $this->length()) {
 			return $this->substring($length);
-		} else return PString::createFromString('');
+		} else {
+			return PString::createFromString('');
+		}
 	}
 
 	/**
@@ -631,7 +646,9 @@ class PString extends PObject
 				$part = __($part);
 				if (!$isFirstRun) {
 					$part = $part->firstToUppercase();
-				} else $isFirstRun = false;
+				} else {
+					$isFirstRun = false;
+				}
 				$string = $string->appendString($part);
 			}
 
@@ -691,7 +708,9 @@ class PString extends PObject
 	{
 		if ($this->length() > $length) {
 			return $this->substring(0, $length - 3)->addString('...');
-		} else return $this;
+		} else {
+			return $this;
+		}
 	}
 
 
@@ -708,7 +727,9 @@ class PString extends PObject
 			$subStr = $this->substring(0, $length);
 
 			return __($subStr)->substring(0, strrpos($subStr, $endChar) + 1);;
-		} else return $this;
+		} else {
+			return $this;
+		}
 	}
 
 	/**
@@ -724,7 +745,9 @@ class PString extends PObject
 			$subStr = $this->substring(0, $length);
 
 			return __($subStr)->substring(0, strrpos($subStr, $char) + 1);;
-		} else return $this;
+		} else {
+			return $this;
+		}
 	}
 
 
