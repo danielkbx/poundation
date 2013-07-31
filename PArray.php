@@ -101,6 +101,37 @@ class PArray extends PCollection {
 			throw new \Exception('Array cannot handle a key.',100,null);
 		}
 	}
+
+	/**
+	 * Sorts the array according to the sort descriptor.
+	 * @param PSortDescriptor $descriptor
+	 *
+	 * @return bool
+	 */
+	public function sortUsingSortDescriptor(PSortDescriptor $descriptor)  {
+		return usort($this->map, array($descriptor, 'cmpObjectsByDescriptor'));
+	}
+
+	/**
+	 * Creates a new array sorted according to the sort descriptor.
+	 * @param PSortDescriptor $descriptor
+	 *
+	 * @return null|PArray
+	 */
+	public function getSortedArrayUsingSortDescriptor(PSortDescriptor $descriptor) {
+
+		$array = self::create($this->map);
+		if ($array->sortUsingSortDescriptor($descriptor)) {
+			return $array;
+		} else {
+			return null;
+		}
+
+	}
+
+	public function sortByCallback($callback) {
+		return usort($this->map, $callback);
+	}
 }
 
 ?>
