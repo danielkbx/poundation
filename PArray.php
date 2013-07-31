@@ -12,8 +12,14 @@ use Poundation\PCollection;
  * @author danielkbx
  */
 class PArray extends PCollection {
-	
-	static function create($array=NULL) {
+
+	public function __construct($array = null) {
+
+		parent::__construct();
+		$this->addArray($array);
+	}
+
+	static function create($array = null) {
 		$newArray = new PArray();
 		if ($array) {
 			$newArray->addArray($array);
