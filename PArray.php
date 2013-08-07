@@ -135,6 +135,69 @@ class PArray extends PCollection {
 
 	}
 
+	/**
+	 * Sorts the array by the given property name (using a sort descriptor internally).
+	 * @param     $propertyName
+	 * @param int $sortDirection
+	 *
+	 * @return bool
+	 */
+	public function sortByPropertyName($propertyName, $sortDirection = SORT_ASC) {
+
+		if (is_string($propertyName)) {
+			return $this->sortUsingSortDescriptor(new PSortDescriptor($propertyName, $sortDirection));
+		}
+
+		return false;
+	}
+
+	/**
+	 * Creates a new array sorted by the given property name (using a sort descriptor internally).
+	 * @param     $propertyName
+	 * @param int $sortDirection
+	 *
+	 * @return null|PArray
+	 */
+	public function getSortedArrayByPropertyName($propertyName, $sortDirection = SORT_ASC) {
+		if (is_string($propertyName)) {
+			return $this->getSortedArrayUsingSortDescriptor(new PSortDescriptor($propertyName, $sortDirection));
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a new array which has been filtered.
+	 * @param PFilterDescriptor $descriptor
+	 *
+	 * @return null|PArray
+	 */
+	public function getFilteredArrayUsingFilterDescriptor(PFilterDescriptor $descriptor) {
+
+		$array = self::create($this->map);
+		if ($array->filterUsingFilterDescriptor($descriptor)) {
+			return $array;
+		} else {
+			return null;
+		}
+
+	}
+
+	/**
+	 * Returns a new array which has been filtered by the given property name and value (using a filter descriptor internally).
+	 * @param $property
+	 * @param $value
+	 *
+	 * @return null|PArray
+	 */
+	public function getFilteredArrayByPropertyName($property, $value) {
+		if (is_string($property)) {
+			return $this->getFilteredArrayUsingFilterDescriptor(new PFilterDescriptor($property, $value));
+		} else {
+			return null;
+		}
+	}
+
 	public function sortByCallback($callback) {
 		return usort($this->map, $callback);
 	}

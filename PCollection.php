@@ -100,6 +100,44 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	function string($glue) {
 		return __(implode($glue, $this->map));
 	}
+
+	/**
+	 * Filters the collection using the filter descriptor.
+	 * @param PFilterDescriptor $descriptor
+	 *
+	 * @return bool
+	 */
+	function filterUsingFilterDescriptor(PFilterDescriptor $descriptor) {
+
+		$indexesToRemove = array();
+
+		foreach($this->map as $key => $value) {
+			if (!$descriptor->doesElementMatch($value)) {
+				$indexesToRemove[] = $key;
+			}
+		}
+
+		foreach($indexesToRemove as $indexToRemove) {
+			unset($this->map[$indexToRemove]);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Filters the collection by the given property name and value (using a filter descriptor internally).
+	 * @param $property
+	 * @param $value
+	 *
+	 * @return bool
+	 */
+	function filterByProperty($property, $value) {
+		if (is_string($property)) {
+			return $this->filterUsingFilterDescriptor(new PFilterDescriptor($property, $value));
+		} else {
+			return false;
+		}
+	}
 	
 	// Iteration methods
 	
