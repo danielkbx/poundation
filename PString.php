@@ -29,6 +29,7 @@ class PString extends PObject
 	{
 		$sz     = 'BKMGTP';
 		$factor = floor((strlen($bytes) - 1) / 3);
+
 		return self::createFromString(sprintf("%.{$numberOfDigits}f", $bytes / pow(1024, $factor)) . @$sz[$factor]);
 	}
 
@@ -718,38 +719,80 @@ class PString extends PObject
 	 * Cuts the string after given length and returns all of the string before the end character
 	 *
 	 * @param integer $length
-	 * @param PString $endChar
 	 */
-	public function shortenAfterSentence($length, $endChar = '.')
+	public function shortenAfterSentence($length)
 	{
-		if ($this->length() > $length) {
+		$endChar = '.';
+		$string         = $this->decodedHTMLEntities();
+		$didContainHTML = !($string->isEqual($this));
 
-			$subStr = $this->substring(0, $length);
+		$sentences = $string->trim()->removeTrailingCharactersWhenMatching($endChar)->components($endChar .  ' ');
 
-			return __($subStr)->substring(0, strrpos($subStr, $endChar) + 1);;
-		} else {
-			return $this;
+		$result    = __('');
+		$didUseOne = false;
+		foreach ($sentences as $sentence) {
+			if ($sentence instanceof PString) {
+				$length -= $sentence->length();
+
+				if ($length >= 0 || $didUseOne == false) {
+					$result->addString($sentence)->addString($endChar . ' ');
+					$didUseOne = true;
+				} else {
+					break;
+				}
+			}
 		}
+
+		$result = $result->removeTrailingCharactersWhenMatching(' ');
+
+		return ($didContainHTML) ? $result->encodedHTMLEntities() : $result;
 	}
 
+
 	/**
-	 * Cuts the String after given length and returns all of the String befor end character
+	 * Cuts the String after given length and returns all of the String before end character
 	 *
 	 * @param integer $length
 	 * @param PString $endChar
 	 */
 	public function shortenAfterChar($length, $char = '.')
 	{
-		if ($this->length() > $length) {
+		$string = $this->decodedHTMLEntities();
 
-			$subStr = $this->substring(0, $length);
+		$didContainHTML = !($string->isEqual($this));
 
-			return __($subStr)->substring(0, strrpos($subStr, $char) + 1);;
+		if ($string->length() > $length) {
+
+			$subStr = $string->substring(0, $length);
+
+			$result = __($subStr)->substring(0, strrpos($subStr, $char) + 1);
+
+			return ($didContainHTML) ? $result->encodedHTMLEntities() : $result;
+
 		} else {
 			return $this;
 		}
 	}
 
+	/**
+	 * Returns a string where all html entities have been encoded.
+	 *
+	 * @return PString
+	 */
+	public function encodedHTMLEntities()
+	{
+		return __(htmlentities($this->_string));
+	}
+
+	/**
+	 * Returns a string where all html entities have been decoded.
+	 *
+	 * @return PString
+	 */
+	public function decodedHTMLEntities()
+	{
+		return __(html_entity_decode($this->_string));
+	}
 
 	public function stringValue()
 	{
@@ -857,7 +900,6 @@ class PString extends PObject
 	{
 		return (boolean)$this->_string;
 	}
-
 
 	/* (non-PHPdoc)
 	 * @see \Poundation\Object::isEqual()

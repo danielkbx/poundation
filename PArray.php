@@ -138,6 +138,36 @@ class PArray extends PCollection {
 	public function sortByCallback($callback) {
 		return usort($this->map, $callback);
 	}
+
+	/**
+	 * Removes the last elements.
+	 * @param $index The index of the element where the removal starts. The element with the given index is kept.
+	 *
+	 * @return $this
+	 */
+	public function shrinkTo($index) {
+		$numberToRemove = $this->count() - $index - 1;
+		return $this->shrinkBy(max(0, $numberToRemove));
+	}
+
+	/**
+	 * Removes the last elements.
+	 * @param $count The number of elements to remove.
+	 *
+	 * @return $this
+	 */
+	public function shrinkBy($count) {
+
+		if ($count < $this->count()) {
+
+			for ($i = 0; $i < $count; $i++) {
+				array_pop($this->map);
+			}
+
+		}
+
+		return $this;
+	}
 }
 
 ?>

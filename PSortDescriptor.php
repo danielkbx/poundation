@@ -13,7 +13,7 @@ class PSortDescriptor extends PObject
 
 	public function __construct($property, $sortDirection = SORT_ASC)
 	{
-		$this->descriptor = $property;
+		$this->descriptor    = $property;
 		$this->sortDirection = $sortDirection;
 	}
 
@@ -22,7 +22,8 @@ class PSortDescriptor extends PObject
 		return $this->descriptor;
 	}
 
-	public function getSortDirection() {
+	public function getSortDirection()
+	{
 		return $this->sortDirection;
 	}
 
@@ -38,36 +39,56 @@ class PSortDescriptor extends PObject
 
 		if (is_null($this->publicProperty) && is_null($this->publicAccessor)) {
 
-				$reflectionClass = new \ReflectionClass($a);
+			$reflectionClass = new \ReflectionClass($a);
 
-				if (property_exists($a, $this->descriptor) && property_exists($b, $this->descriptor)) {
+			if (property_exists($a, $this->descriptor) && property_exists($b, $this->descriptor)) {
 
-					$propertyClass   = $reflectionClass->getProperty($property);
-					if ($propertyClass->isPublic()) {
-						$this->publicProperty = $property;
-					} else {
-						$this->publicProperty = false;
-					}
+				$propertyClass = $reflectionClass->getProperty($property);
+				if ($propertyClass->isPublic()) {
+					$this->publicProperty = $property;
+				} else {
+					$this->publicProperty = false;
 				}
-
+			}
 
 			if (is_null($this->publicProperty) || $this->publicProperty === false) {
 
 				$method = 'get' . __($property)->uppercaseAtBeginning();
-				$methodClass = $reflectionClass->getMethod($method);
-
-				if ($methodClass->isPublic()) {
-					$this->publicAccessor = $method;
+				if (method_exists($a, $method)) {
+					$methodClass = $reflectionClass->getMethod($method);
+					if ($methodClass->isPublic()) {
+						$this->publicAccessor = $method;
+					} else {
+						$this->publicAccessor = false;
+					}
 				} else {
 					$this->publicAccessor = false;
+
 				}
-
-
 			}
+
+			if ((is_null($this->publicProperty) && is_null($this->publicAccessor)) || ($this->publicProperty === false && $this->publicAccessor === false)) {
+
+				$method = $property;
+				if (method_exists($a, $method)) {
+					$methodClass = $reflectionClass->getMethod($method);
+					if ($methodClass->isPublic()) {
+						$this->publicAccessor = $method;
+					} else {
+						$this->publicAccessor = false;
+					}
+				} else {
+					$this->publicAccessor = false;
+
+				}
+			}
+
+
 
 		}
 
 		if (is_string($this->publicProperty)) {
+
 			$canCompare = true;
 
 			$valueA = $a->$property;
@@ -75,8 +96,14 @@ class PSortDescriptor extends PObject
 		} else if (is_string($this->publicAccessor)) {
 			$canCompare = true;
 
-			$valueA = call_user_func(array($a, $this->publicAccessor));
-			$valueB = call_user_func(array($b, $this->publicAccessor));
+			$valueA = call_user_func(array(
+										  $a,
+										  $this->publicAccessor
+									 ));
+			$valueB = call_user_func(array(
+										  $b,
+										  $this->publicAccessor
+									 ));
 		}
 
 		if ($canCompare) {
@@ -90,7 +117,7 @@ class PSortDescriptor extends PObject
 
 			$compareValue = strcasecmp((string)$valueA, (string)$valueB);
 			if ($this->sortDirection == SORT_DESC) {
-				$compareValue*= -1;
+				$compareValue *= -1;
 			}
 
 			return $compareValue;
