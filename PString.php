@@ -868,7 +868,17 @@ class PString extends PObject
 	 */
 	public function stripTags($allowedTags = '')
 	{
-		return __(strip_tags($this->stringValue(), $allowedTags));
+		$usedAllowedTags = '';
+		if (is_array($allowedTags)) {
+			foreach($allowedTags as $tag) {
+				$usedAllowedTags .= '<';
+				$usedAllowedTags .= __($tag)->removeLeadingCharactersWhenMatching('<')->removeTrailingCharactersWhenMatching('>')->removeTrailingCharactersWhenMatching('/')->trim();
+				$usedAllowedTags .= '>';
+			}
+		} else {
+			$usedAllowedTags = $allowedTags;
+		}
+		return __(strip_tags($this->stringValue(), $usedAllowedTags));
 	}
 
 	/**
