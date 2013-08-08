@@ -720,32 +720,9 @@ class PString extends PObject
 	 *
 	 * @param integer $length
 	 */
-	public function shortenAfterSentence($length)
+	public function shortenAfterSentence($length, $ellipsis = ' …')
 	{
-		$endChar = '.';
-		$string         = $this->decodedHTMLEntities();
-		$didContainHTML = !($string->isEqual($this));
-
-		$sentences = $string->trim()->removeTrailingCharactersWhenMatching($endChar)->components($endChar .  ' ');
-
-		$result    = __('');
-		$didUseOne = false;
-		foreach ($sentences as $sentence) {
-			if ($sentence instanceof PString) {
-				$length -= $sentence->length();
-
-				if ($length >= 0 || $didUseOne == false) {
-					$result->addString($sentence)->addString($endChar . ' ');
-					$didUseOne = true;
-				} else {
-					break;
-				}
-			}
-		}
-
-		$result = $result->removeTrailingCharactersWhenMatching(' ');
-
-		return ($didContainHTML) ? $result->encodedHTMLEntities() : $result;
+		return $this->shortenAfterChar($length, '. ', $ellipsis)->replace('..','.');
 	}
 
 
@@ -755,23 +732,36 @@ class PString extends PObject
 	 * @param integer $length
 	 * @param PString $endChar
 	 */
-	public function shortenAfterChar($length, $char = '.')
+	public function shortenAfterChar($length, $endChar = '.', $ellipsis = ' …')
 	{
-		$string = $this->decodedHTMLEntities();
 
+		$string         = $this->decodedHTMLEntities();
 		$didContainHTML = !($string->isEqual($this));
 
-		if ($string->length() > $length) {
+		$sentences = $string->trim()->removeTrailingCharactersWhenMatching($endChar)->components($endChar);
 
-			$subStr = $string->substring(0, $length);
+		$result    = __('');
+		$didUseOne = false;
+		foreach ($sentences as $sentence) {
+			if ($sentence instanceof PString) {
+				$length -= $sentence->length();
 
-			$result = __($subStr)->substring(0, strrpos($subStr, $char) + 1);
-
-			return ($didContainHTML) ? $result->encodedHTMLEntities() : $result;
-
-		} else {
-			return $this;
+				if ($length >= 0 || $didUseOne == false) {
+					$result->addString($sentence)->addString($endChar);
+					$didUseOne = true;
+				} else {
+					break;
+				}
+			}
 		}
+
+		$result = $result->removeTrailingCharactersWhenMatching(' ');
+
+		if ($result->length() < $string->length()) {
+			$result->addString($ellipsis);
+		}
+
+		return ($didContainHTML) ? $result->encodedHTMLEntities() : $result;
 	}
 
 	/**
