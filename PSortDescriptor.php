@@ -61,9 +61,6 @@ class PSortDescriptor extends PObject
 					} else {
 						$this->publicAccessor = false;
 					}
-				} else {
-					$this->publicAccessor = false;
-
 				}
 			}
 
@@ -77,9 +74,6 @@ class PSortDescriptor extends PObject
 					} else {
 						$this->publicAccessor = false;
 					}
-				} else {
-					$this->publicAccessor = false;
-
 				}
 			}
 
