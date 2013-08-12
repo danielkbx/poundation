@@ -2,11 +2,13 @@
 
 namespace Poundation;
 
-class PDate extends PObject implements \JsonSerializable {
+class PDate extends PObject implements \JsonSerializable
+{
 
 	private $data;
 
-	public function __construct($value = null) {
+	public function __construct($value = null)
+	{
 
 		$dateValue = null;
 
@@ -33,7 +35,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	static function now() {
+	static function now()
+	{
 		return new self();
 	}
 
@@ -42,11 +45,33 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	static function today() {
+	static function today()
+	{
 		return self::now()->setToMidnight();
 	}
 
-	public function __clone() {
+	/**
+	 * Creates a new date.
+	 *
+	 * @param null $value
+	 *
+	 * @return PDate|null
+	 */
+	static function createDate($value = null)
+	{
+		$date = null;
+
+		if ($value == null) {
+			$date = self::now();
+		} else {
+			$date = new self($value);
+		}
+
+		return $date;
+	}
+
+	public function __clone()
+	{
 
 		$isoValue   = $this->getInISO8601Format();
 		$newValue   = new \DateTime($isoValue);
@@ -54,11 +79,13 @@ class PDate extends PObject implements \JsonSerializable {
 
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		return $this->getInISO8601Format();
 	}
 
-	public function jsonSerialize() {
+	public function jsonSerialize()
+	{
 		return $this->getInISO8601Format();
 	}
 
@@ -67,7 +94,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function seconds() {
+	public function seconds()
+	{
 		return (int)$this->data->format('s');
 	}
 
@@ -76,7 +104,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function minutes() {
+	public function minutes()
+	{
 		return (int)$this->data->format('i');
 	}
 
@@ -85,7 +114,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function hours() {
+	public function hours()
+	{
 		return (int)$this->data->format('H');
 	}
 
@@ -95,7 +125,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function day() {
+	public function day()
+	{
 		return (int)$this->data->format('d');
 	}
 
@@ -104,7 +135,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function month() {
+	public function month()
+	{
 		return (int)$this->data->format('m');
 	}
 
@@ -113,7 +145,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function year() {
+	public function year()
+	{
 		return (int)$this->data->format('Y');
 	}
 
@@ -130,7 +163,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function add($seconds = 0, $minutes = 0, $hours = 0, $days = 0, $months = 0, $years = 0) {
+	public function add($seconds = 0, $minutes = 0, $hours = 0, $days = 0, $months = 0, $years = 0)
+	{
 
 		if ($years != 0) {
 			$this->addYears($years);
@@ -162,7 +196,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addSeconds($seconds) {
+	public function addSeconds($seconds)
+	{
 		$interval = new \DateInterval('PT' . abs($seconds) . 'S');
 		if ($seconds > 0) {
 			$this->data->add($interval);
@@ -180,7 +215,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addMinutes($minutes) {
+	public function addMinutes($minutes)
+	{
 		return $this->addSeconds($minutes * 60);
 	}
 
@@ -191,7 +227,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addHours($hours) {
+	public function addHours($hours)
+	{
 		return $this->addMinutes($hours * 60);
 	}
 
@@ -202,7 +239,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addDays($days) {
+	public function addDays($days)
+	{
 		$interval = new \DateInterval('P' . abs($days) . 'D');
 		if ($days > 0) {
 			$this->data->add($interval);
@@ -220,7 +258,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addWeeks($weeks) {
+	public function addWeeks($weeks)
+	{
 		$interval = new \DateInterval('P' . abs($weeks) . 'W');
 		if ($weeks > 0) {
 			$this->data->add($interval);
@@ -238,7 +277,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addMonths($months) {
+	public function addMonths($months)
+	{
 		$interval = new \DateInterval('P' + abs($months) + 'M');
 		if ($months > 0) {
 			$this->data->add($interval);
@@ -256,7 +296,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function addYears($years) {
+	public function addYears($years)
+	{
 		$interval = new \DateInterval('P' + abs($years) + 'Y');
 		if ($years > 0) {
 			$this->data->add($interval);
@@ -272,7 +313,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return PDate
 	 */
-	public function setToMidnight() {
+	public function setToMidnight()
+	{
 		$hours   = $this->hours();
 		$minutes = $this->minutes();
 		$seconds = $this->seconds();
@@ -286,7 +328,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return \DateTime
 	 */
-	public function getDateTime() {
+	public function getDateTime()
+	{
 		return $this->data;
 	}
 
@@ -297,7 +340,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return bool
 	 */
-	public function adjustTimezone($timezoneString) {
+	public function adjustTimezone($timezoneString)
+	{
 
 		$timezone = new \DateTimeZone($timezoneString);
 		if ($timezone) {
@@ -314,7 +358,8 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return string|null
 	 */
-	public function getInDoctrineFormat($includeTime = false) {
+	public function getInDoctrineFormat($includeTime = false)
+	{
 		$format = 'Y-m-d';
 		if ($includeTime) {
 			$format .= ' H:i:s.u';
@@ -328,17 +373,20 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return null|string
 	 */
-	public function getInISO8601Format() {
+	public function getInISO8601Format()
+	{
 		return ($this->data) ? $this->getDateTime()->format(\DateTime::ISO8601) : null;
 	}
 
 	/**
 	 * Returns a formated string. See date command for valid format strings.
+	 *
 	 * @param $format
 	 *
 	 * @return string
 	 */
-	public function getFormatedString($format) {
+	public function getFormatedString($format)
+	{
 		return $this->data->format($format);
 	}
 
@@ -349,8 +397,17 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return bool
 	 */
-	public function isBefore(PDate $otherDate) {
+	public function isBefore(PDate $otherDate)
+	{
 		return ($this->data < $otherDate->data);
+	}
+
+	/**
+	 * Returns true if the date is already in the past.
+	 * @return bool
+	 */
+	public function isPast() {
+		return $this->isBefore(self::now());
 	}
 
 	/**
@@ -360,8 +417,18 @@ class PDate extends PObject implements \JsonSerializable {
 	 *
 	 * @return bool
 	 */
-	public function isAfter(PDate $otherDate) {
+	public function isAfter(PDate $otherDate)
+	{
 		return ($this->data > $otherDate->data);
+	}
+
+	/**
+	 * Returns true if the date is yet in the future.
+	 * @return bool
+	 */
+	public function isFuture()
+	{
+		 return $this->isAfter(self::now());
 	}
 
 }
