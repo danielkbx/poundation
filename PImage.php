@@ -161,60 +161,31 @@ class PImage extends PObject
 
 		if (PConfig::isCurlEnabled()) {
 
-			$curl = curl_init((string)$url);
+			$tmpFile = tmpfile();
 
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_HEADER, false);
+			if ($tmpFile) {
+				$tmpMeta = stream_get_meta_data($tmpFile);
+				$tmpName = $tmpMeta['uri'];
 
-			$binary       = curl_exec($curl);
-			$statusCode   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-			$contentType  = __(curl_getinfo($curl, CURLINFO_CONTENT_TYPE));
-			$effectiveURL = PURL::URLWithString(curl_getinfo($curl, CURLINFO_EFFECTIVE_URL));
+				$curl = curl_init((string)$url);
 
-			curl_close($curl);
+				curl_setopt($curl, CURLOPT_FILE, $tmpFile);
+				curl_setopt($curl, CURLOPT_HEADER, false);
 
-			if ($statusCode == 200) {
-				if (strlen($binary) > 0) {
+				$binary     = curl_exec($curl);
+				$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-					if (is_null($filename)) {
-						$filename = null;
-						// filename determination
-						if ($effectiveURL) {
-							$pathComponents = $effectiveURL->pathComponents();
-							if ($pathComponents) {
-								$filename = $pathComponents->lastObject();
-							}
-						}
+				curl_close($curl);
 
-						// if the URL does not contain a filename we generate a unique one
-						if (is_null($filename)) {
-							$filename = (string)PString::createUUID();
-						}
-
-						// checking the mime type
-						$MIME = __(PMIME::getTypeForFilename($filename));
-						if (!$MIME->hasPrefix('image')) {
-							// since the filename indicates no image we check the header
-							if ($contentType->hasPrefix('image')) {
-								$MIME = $contentType;
-							}
-
-							// concating the filename and the extension
-							$filename .= '.' . PMIME::getExtensionForType($MIME);
-						}
-					}
-
-					if (!is_null($filename)) {
-						// finally, create the image
-						$image = self::createImageFromString($binary, $filename);
-					}
+				if ($statusCode == 200) {
+					$image = self::createImageFromFilename($tmpName);
+				} else {
+					throw new \Exception('Received HTTP status ' . $statusCode);
 				}
-			} else {
-				throw new \Exception('Received HTTP status ' . $statusCode);
-			}
 
-		} else {
-			throw new \Exception('cURL extension missing.', 500);
+			} else {
+				throw new \Exception('cURL extension missing.', 500);
+			}
 		}
 
 		return $image;
