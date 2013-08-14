@@ -204,7 +204,7 @@ class PAddress extends \Poundation\PObject implements \JsonSerializable {
 		}
 
 
-		return implode(',', $data);
+		return implode(', ', $data);
 
 	}
 
