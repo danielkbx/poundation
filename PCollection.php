@@ -212,7 +212,7 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * (non-PHPdoc)
 	 * @see ArrayAccess::offsetSet()
 	 */
-	abstract public function offsetSet($offset, $value);
+	public function offsetSet($offset, $value) {}
 		
 	/*
 	 * (non-PHPdoc)
