@@ -390,6 +390,17 @@ class PDate extends PObject implements \JsonSerializable
 		return $this->data->format($format);
 	}
 
+
+	public function isEqualToDate(PDate $otherDate) {
+
+		if (parent::isEqual($otherDate)) {
+			return true;
+		}
+
+		return ($this->data == $otherDate->data);
+
+	}
+
 	/**
 	 * Returns true if this date is earlier than the other date.
 	 *
@@ -429,6 +440,24 @@ class PDate extends PObject implements \JsonSerializable
 	public function isFuture()
 	{
 		 return $this->isAfter(self::now());
+	}
+
+	/**
+	 * Returns true is the date is between last midnight and next midnight.
+	 * @return bool
+	 */
+	public function isToday() {
+
+		$lastMidnight = PDate::today();
+		$nextMidnight = PDate::today()->addDays(1);
+
+		if ($this->isAfter($lastMidnight) || $this->isEqualToDate($lastMidnight)) {
+			if ($this->isBefore($nextMidnight)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }
