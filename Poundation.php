@@ -1,5 +1,7 @@
 <?php
 
+namespace Poundation;
+
 spl_autoload_register(function ($className) {
 
 	$path = dirname(dirname(__FILE__));
@@ -23,12 +25,12 @@ spl_autoload_register(function ($className) {
  *
  * @return \Poundation\PString
  */
-if (!function_exists('__')) {
-	function __($plainString = '')
-	{
-		return new \Poundation\PString($plainString);
-	}
+
+function __($plainString = '')
+{
+	return new \Poundation\PString($plainString);
 }
+
 
 /**
  * Creates a new Poundation String object.
@@ -43,18 +45,4 @@ if (!function_exists('_s')) {
 		return new \Poundation\PString($plainString);
 	}
 }
-
-
-/**
- * Returns a new Poundation Array object.
- *
- * @param array $array
- *
- * @return \Poundation\PArray
- */
-function parray($array = false)
-{
-	return \Poundation\PArray::create($array);
-}
-
 ?>

@@ -592,7 +592,7 @@ class PString extends PObject
 		}
 
 		if ($pos === false) {
-			return __($this->_string);
+			return \Poundation\__($this->_string);
 		} else {
 			return __(substr($this->_string, 0, $pos));
 		}
