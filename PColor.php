@@ -41,7 +41,7 @@ class PColor extends PObject implements \JsonSerializable
 		$color = null;
 
 		if (!$string instanceof PString) {
-			$string = __($string);
+			$string = new PString($string);
 		}
 
 		if ($string instanceof PString) {
@@ -51,9 +51,9 @@ class PColor extends PObject implements \JsonSerializable
 				$values     = $string->substringBetween('(', ')');
 				$components = $values->components(',');
 				if ($components->count() == 4) {
-					$components[3] = __($components[3]->floatValue() * 255.0);
+					$components[3] = new PString($components[3]->floatValue() * 255.0);
 				} else {
-					$components[3] = __('255');
+					$components[3] = new PString('255');
 				}
 
 				if ($components instanceof PArray && $components->count() == 4) {
@@ -282,13 +282,13 @@ class PColor extends PObject implements \JsonSerializable
 	public function getHexString($includeAlpha = false, $preferShortVersion = true)
 	{
 		$components = array(
-			__(dechex($this->getRed() * 255)),
-			__(dechex($this->getGreen() * 255)),
-			__(dechex($this->getBlue() * 255))
+			new PString(dechex($this->getRed() * 255)),
+			new PString(dechex($this->getGreen() * 255)),
+			new PString(dechex($this->getBlue() * 255))
 		);
 
 		if ($includeAlpha) {
-			$components[] = __(dechex($this->getAlpha() * 255));
+			$components[] = new PString(dechex($this->getAlpha() * 255));
 		}
 
 		$hex         = '#';

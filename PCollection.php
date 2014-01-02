@@ -98,7 +98,7 @@ abstract class PCollection extends PObject implements \Iterator, \Countable, \Ar
 	 * @return \Poundation\PString
 	 */
 	function string($glue) {
-		return __(implode($glue, $this->map));
+		return new PString(implode($glue, $this->map));
 	}
 
 	/**

@@ -93,7 +93,7 @@ class PString extends PObject
 		$segmentLength = max(1.0, min($segmentLength, $this->length()));
 		$nativeArray   = str_split($this->_string, $segmentLength);
 
-		return (is_array($nativeArray) ? parray($nativeArray) : null);
+		return (is_array($nativeArray) ? new \Poundation\PArray($nativeArray) : null);
 	}
 
 
@@ -164,7 +164,7 @@ class PString extends PObject
 	public function first($length = 1)
 	{
 		if ($length == 0) {
-			return __();
+			return new self();
 		} else {
 			return $this->substring(0, $length);
 		}
@@ -180,7 +180,7 @@ class PString extends PObject
 	public function last($length = 1)
 	{
 		if ($length == 0) {
-			return __();
+			return new self();
 		} else {
 			return $this->substring($this->length() - $length);
 		}
@@ -569,9 +569,9 @@ class PString extends PObject
 		}
 
 		if ($pos === false) {
-			return __('');
+			return new self('');
 		} else {
-			return __(substr($this->_string, $pos + 1));
+			return new self(substr($this->_string, $pos + 1));
 		}
 	}
 
@@ -594,7 +594,7 @@ class PString extends PObject
 		if ($pos === false) {
 			return \Poundation\__($this->_string);
 		} else {
-			return __(substr($this->_string, 0, $pos));
+			return new self(substr($this->_string, 0, $pos));
 		}
 	}
 
@@ -641,10 +641,10 @@ class PString extends PObject
 	{
 		if ($this->contains($seperator)) {
 			$parts      = $this->components($seperator);
-			$string     = __('');
+			$string     = new self('');
 			$isFirstRun = true;
 			foreach ($parts as $part) {
-				$part = __($part);
+				$part = new self($part);
 				if (!$isFirstRun) {
 					$part = $part->firstToUppercase();
 				} else {
@@ -740,7 +740,7 @@ class PString extends PObject
 
 		$sentences = $string->trim()->removeTrailingCharactersWhenMatching($endChar)->components($endChar);
 
-		$result    = __('');
+		$result    = new self('');
 		$didUseOne = false;
 		foreach ($sentences as $sentence) {
 			if ($sentence instanceof PString) {
@@ -771,7 +771,7 @@ class PString extends PObject
 	 */
 	public function encodedHTMLEntities()
 	{
-		return __(htmlentities($this->_string));
+		return new self(htmlentities($this->_string));
 	}
 
 	/**
@@ -781,7 +781,7 @@ class PString extends PObject
 	 */
 	public function decodedHTMLEntities()
 	{
-		return __(html_entity_decode($this->_string));
+		return new self(html_entity_decode($this->_string));
 	}
 
 	public function stringValue()
@@ -862,13 +862,13 @@ class PString extends PObject
 		if (is_array($allowedTags)) {
 			foreach($allowedTags as $tag) {
 				$usedAllowedTags .= '<';
-				$usedAllowedTags .= __($tag)->removeLeadingCharactersWhenMatching('<')->removeTrailingCharactersWhenMatching('>')->removeTrailingCharactersWhenMatching('/')->trim();
+				$usedAllowedTags .= PString::createFromString($tag)->removeLeadingCharactersWhenMatching('<')->removeTrailingCharactersWhenMatching('>')->removeTrailingCharactersWhenMatching('/')->trim();
 				$usedAllowedTags .= '>';
 			}
 		} else {
 			$usedAllowedTags = $allowedTags;
 		}
-		return __(strip_tags($this->stringValue(), $usedAllowedTags));
+		return new self(strip_tags($this->stringValue(), $usedAllowedTags));
 	}
 
 	/**
@@ -928,10 +928,10 @@ class PString extends PObject
 		$text = strtolower($text);
 		$text = preg_replace('~[^-\w]+~', '', $text);
 		if (empty($text)) {
-			return __('n-a');
+			return new self('n-a');
 		}
 
-		return __($text)->trim();
+		return PString::createFromString($text)->trim();
 	}
 
 	public function separateSubstringBetween($startString, $endString)

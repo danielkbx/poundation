@@ -72,7 +72,7 @@ class PArray extends PCollection {
 					$this->add($value);
 				}
 			} else {
-				$exceptionString = __('Cannot add values from type ');
+				$exceptionString = new PString('Cannot add values from type ');
 				if (is_object($array)) {
 					$exceptionString->addString(get_class($array));
 				} else {

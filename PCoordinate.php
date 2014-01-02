@@ -39,11 +39,11 @@ class PCoordinate extends PObject implements \JsonSerializable
 
 		$coordinate = null;
 
-		$value = __($value);
+		$value = new PString($value);
 
 		if ($value->first() == '(' && $value->last() == ')') {
 
-			$components = __($value)->removeLeadingCharactersWhenMatching('(')->removeTrailingCharactersWhenMatching(')')->components(',');
+			$components = PString::createFromString($value)->removeLeadingCharactersWhenMatching('(')->removeTrailingCharactersWhenMatching(')')->components(',');
 			if ($components->count() == 2) {
 
 				$lat = $components->objectForIndex(0)->floatValue();

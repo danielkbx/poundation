@@ -26,7 +26,7 @@ abstract class PEnum extends PObject {
 			if ($reflection !== false) {
 				$constants = $reflection->getConstants();
 				foreach ($constants as $name=>$value) {
-					if (__($name)->hasPrefix('ROLE_')) {
+					if (PString::createFromString($name)->hasPrefix('ROLE_')) {
 						self::$_constants[$prefix]->setValueForKey($value, $name);
 					}
 				}

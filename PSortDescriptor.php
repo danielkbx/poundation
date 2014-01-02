@@ -53,7 +53,7 @@ class PSortDescriptor extends PObject
 
 			if (is_null($this->publicProperty) || $this->publicProperty === false) {
 
-				$method = 'get' . __($property)->uppercaseAtBeginning();
+				$method = 'get' . PString::createFromString($property)->uppercaseAtBeginning();
 				if (method_exists($a, $method)) {
 					$methodClass = $reflectionClass->getMethod($method);
 					if ($methodClass->isPublic()) {

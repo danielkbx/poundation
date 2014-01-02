@@ -38,7 +38,7 @@ class PTemplate {
 	 * @return $this
 	 */
 	public function setField($fieldName, $value) {
-		$fieldName = __($fieldName);
+		$fieldName = new PString($fieldName);
 		if ($fieldName->length() > 2) {
 
 			$name = $fieldName->removeLeadingCharactersWhenMatching('%')->removeTrailingCharactersWhenMatching('%')->uppercase();
@@ -90,7 +90,7 @@ class PTemplate {
 		if (is_null($this->rendered)) {
 
 			if (is_string($this->template)) {
-				$rendered = __($this->template);
+				$rendered = new PString($this->template);
 
 				foreach ($this->fields as $name => $value) {
 					$rendered = $rendered->replace('%' . $name . '%', $value);

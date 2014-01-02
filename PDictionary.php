@@ -80,7 +80,7 @@ class PDictionary extends PCollection {
 	 * @return PArray
 	 */
 	public function allKeys() {
-		return parray(array_keys($this->map));
+		return new \Poundation\PArray(array_keys($this->map));
 	}
 	
 	/**

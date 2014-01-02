@@ -45,7 +45,7 @@ class PFilterDescriptor extends PObject
 
 			if (is_null($this->publicProperty) || $this->publicProperty === false) {
 
-				$method = 'get' . __($property)->uppercaseAtBeginning();
+				$method = 'get' . PString::createFromString($property)->uppercaseAtBeginning();
 				if (method_exists($element, $method)) {
 					$methodClass = $reflectionClass->getMethod($method);
 					if ($methodClass->isPublic()) {
@@ -71,7 +71,7 @@ class PFilterDescriptor extends PObject
 
 			if ((is_null($this->publicProperty) && is_null($this->publicAccessor)) || ($this->publicProperty === false && $this->publicAccessor === false)) {
 
-				$method = 'is' . __($property)->uppercaseAtBeginning();;
+				$method = 'is' . PString::createFromString($property)->uppercaseAtBeginning();;
 				if (method_exists($element, $method)) {
 					$methodClass = $reflectionClass->getMethod($method);
 					if ($methodClass->isPublic()) {

@@ -85,12 +85,12 @@ class PURL extends PObject implements \JsonSerializable
 		$this->fullyConstructed = false;
 		switch ($components->count()) {
 			case 0:
-				$this->scheme = __('');
-				$this->host   = __('');
+				$this->scheme = new PString('');
+				$this->host   = new PString('');
 				$this->port   = 0;
 				break;
 			case 1:
-				$this->scheme = __(self::SCHEME_HTTP);
+				$this->scheme = new PString(self::SCHEME_HTTP);
 				$this->host   = $components->firstObject()->removeLeadingCharactersWhenMatching('//');
 				$this->port   = 0;
 				break;
@@ -110,11 +110,11 @@ class PURL extends PObject implements \JsonSerializable
 				switch ($portsAndPathComponents->count()) {
 					case 0:
 						$this->port = 0;
-						$this->path = __('');
+						$this->path = new PString('');
 						break;
 					case 1:
 						$this->port = (int)$portsAndPathComponents->firstObject()->integerValue();
-						$this->path = __('');
+						$this->path = new PString('');
 						break;
 					default:
 						$this->port = $portsAndPathComponents->firstObject()->integerValue();
@@ -156,7 +156,7 @@ class PURL extends PObject implements \JsonSerializable
 	 */
 	public function setScheme($scheme)
 	{
-		$this->scheme = __($scheme);
+		$this->scheme = new PString($scheme);
 
 		return $this;
 	}
@@ -180,7 +180,7 @@ class PURL extends PObject implements \JsonSerializable
 	 */
 	public function setHost($host)
 	{
-		$this->host = __($host);
+		$this->host = new PString($host);
 
 		return $this;
 	}
@@ -244,7 +244,7 @@ class PURL extends PObject implements \JsonSerializable
 	 */
 	public function setPath($path)
 	{
-		$this->path = __($path);
+		$this->path = new PString($path);
 
 		return $this;
 	}
@@ -271,7 +271,7 @@ class PURL extends PObject implements \JsonSerializable
 		}
 
 		if (is_null($this->path)) {
-			$this->path = __('');
+			$this->path = new PString('');
 		}
 
 		if ($pathToUse !== false) {
@@ -314,13 +314,13 @@ class PURL extends PObject implements \JsonSerializable
 				return null;
 				break;
 			case 1:
-				return __($components->objectForIndex(0));
+				return new PString($components->objectForIndex(0));
 				break;
 			case 2:
-				return __($components->string('.'));
+				return new PString($components->string('.'));
 				break;
 			default:
-				return __($components[$numberOfComponents - 2])->appendString('.')->appendString($components[$numberOfComponents - 1]);
+				return PString::createFromString($components[$numberOfComponents - 2])->appendString('.')->appendString($components[$numberOfComponents - 1]);
 				break;
 		}
 	}

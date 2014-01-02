@@ -10,7 +10,7 @@ class PMailAddress extends PObject implements \JsonSerializable {
 	private $host;
 	
 	function __construct($email = '') {
-		$components = __($email)->components('@');
+		$components = PString::createFromString($email)->components('@');
 		switch ($components->count()) {
 			case 2:
 				$this->setUser($components[0]);
