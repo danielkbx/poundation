@@ -85,4 +85,30 @@ class PDateRange {
         return $this->interval;
     }
 
+    /**
+     * Returns true if the given date is between the start and the enddate.
+     * @param $date
+     * @return bool
+     * @throws \Exception
+     */
+    public function isDateInRange($date) {
+
+        $result = false;
+
+        if ($date instanceof PDate) {
+            $date = $date->getDateTime();
+        }
+
+        if ($date instanceof \DateTime) {
+
+            $result = ($this->getStartDate() <= $date && $date <= $this->getEndDate());
+
+        } else {
+            throw new \Exception('Cannot change date range with given type. Pass a PDate or a DateTime object!');
+        }
+
+        return $result;
+
+    }
+
 }
