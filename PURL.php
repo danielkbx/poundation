@@ -262,11 +262,11 @@ class PURL extends PObject implements \JsonSerializable
 		$pathToUse = false;
 		if (is_string($path)) {
 			if (strlen($path) > 0) {
-				$pathToUse = $path;
+				$pathToUse = PString::createFromString($path);
 			}
 		} else if ($path instanceof PString) {
 			if ($path->length() > 0) {
-				$pathToUse = $path->stringValue();
+				$pathToUse = $path;
 			}
 		}
 
@@ -275,7 +275,7 @@ class PURL extends PObject implements \JsonSerializable
 		}
 
 		if ($pathToUse !== false) {
-			if (!$this->path->hasSuffix('/')) {
+			if (!$this->path->hasSuffix('/') && !($pathToUse->hasPrefix('/'))) {
 				$this->path->addString('/');
 			}
 			$this->path->addString($path);
