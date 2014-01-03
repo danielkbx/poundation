@@ -74,7 +74,7 @@ class PDateRange {
      * @return \DateTime
      */
     public function getEndDate() {
-        return $this->reference->add($this->interval);
+        return $this->getStartDate()->add($this->interval);
     }
 
     /**
