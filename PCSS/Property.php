@@ -4,15 +4,22 @@ namespace Poundation;
 
 class PCSS_Property extends PObject
 {
+    const DIRECTION_ALL = null;
+    const DIRECTION_LEFT = 'left';
+    const DIRECTION_TOP = 'top';
+    const DIRECTION_RIGHT = 'right';
+    const DIRECTION_BOTTOM = 'bottom';
 
-	private $name;
+    private $name;
 	private $value;
+    private $isImportant = false;
 
-	public function __construct($name, $value = null)
+	public function __construct($name, $value = null, $important = false)
 	{
 
 		$this->name  = (string)$name;
 		$this->value = (string)$value;
+        $this->isImportant = ($important == true);
 	}
 
 	/**
@@ -53,9 +60,33 @@ class PCSS_Property extends PObject
 		return $this;
 	}
 
+    /**
+     * Returns true if the property is marked as important.
+     * @return bool
+     */
+    public function isImportant() {
+        return ($this->isImportant);
+    }
+
+    /**
+     * Sets the important flag.
+     * @param $flag
+     * @return $this
+     */
+    public function setImportant($flag) {
+        $this->isImportant = ($flag == true);
+        return $this;
+    }
+
 	public function __toString()
 	{
-		return $this->name . ': ' . $this->value . ';';
+        $value = $this->name . ': ' . $this->value;
+
+        if ($this->isImportant()) {
+            $value .= ' !important';
+        }
+
+		return $value . ';';
 	}
 
 }
