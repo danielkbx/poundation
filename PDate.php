@@ -19,7 +19,9 @@ class PDate extends PObject implements \JsonSerializable
 			$dateValue = clone $value;
 		} else if (is_string($value)) {
 			$dateValue = new \DateTime($value);
-		} else {
+		} else if ($value instanceof PDate) {
+            $dateValue = $value->getDateTime();
+        } else {
 			$dateValue = new \DateTime('now');
 		}
 
@@ -459,5 +461,17 @@ class PDate extends PObject implements \JsonSerializable
 
 		return false;
 	}
+
+    /**
+     * Returns the balanced time range (which is a date range from now to this date).
+     * @return PDateRange
+     */
+    public function getBalancedTimeRange() {
+
+        $now = PDate::now();
+        $range = PDateRange::createRange($now, $this);
+
+        return $range;
+    }
 
 }

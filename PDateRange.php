@@ -2,7 +2,16 @@
 
 namespace Poundation;
 
-class PDateRange {
+class PDateRange
+{
+
+    const DURATION_YEARS = 'y';
+    const DURATION_MONTHS = 'm';
+    const DURATION_DAYS = 'd';
+    const DURATION_HOURS = 'h';
+    const DURATION_MINUTES = 'i';
+    const DURATION_SECONDS = 's';
+
 
     /**
      * @var \DateTime
@@ -14,7 +23,9 @@ class PDateRange {
      */
     private $interval;
 
-    public function __construct(\DateTime $startDate, \DateTime $endDate) {
+
+    public function __construct(\DateTime $startDate, \DateTime $endDate)
+    {
 
         $this->reference = $startDate;
         $this->interval = $this->reference->diff($endDate);
@@ -22,27 +33,32 @@ class PDateRange {
     }
 
     /**
-     * Creates a date range from the start date to the end date.
+     * Creates a date range from the earlier start date to the later date.
      * @param $startDate
      * @param $endDate
      * @return null|PDateRange
      */
-    static function createRange($startDate, $endDate) {
+    static function createRange($date1, $date2)
+    {
 
         $range = null;
 
         $doStartDate = null;
-        if ($startDate instanceof \DateTime) {
-            $doStartDate = $startDate;
-        } else if ($startDate instanceof PDate) {
-            $doStartDate = $startDate->getDateTime();
+        if ($date1 instanceof \DateTime) {
+            $doStartDate = $date1;
+        } else {
+            if ($date1 instanceof PDate) {
+                $doStartDate = $date1->getDateTime();
+            }
         }
 
         $doEndDate = null;
-        if ($endDate instanceof \DateTime) {
-            $doEndDate = $endDate;
-        } else if ($endDate instanceof PDate) {
-            $doEndDate = $endDate->getDateTime();
+        if ($date2 instanceof \DateTime) {
+            $doEndDate = $date2;
+        } else {
+            if ($date2 instanceof PDate) {
+                $doEndDate = $date2->getDateTime();
+            }
         }
 
         if (!is_null($doStartDate) && !is_null($doEndDate)) {
@@ -65,7 +81,8 @@ class PDateRange {
      * Returns the start date.
      * @return \DateTime
      */
-    public function getStartDate() {
+    public function getStartDate()
+    {
         return clone $this->reference;
     }
 
@@ -73,7 +90,8 @@ class PDateRange {
      * Returns the end date.
      * @return \DateTime
      */
-    public function getEndDate() {
+    public function getEndDate()
+    {
         return $this->getStartDate()->add($this->interval);
     }
 
@@ -81,8 +99,26 @@ class PDateRange {
      * Returns the duration of the interval.
      * @return \DateInterval
      */
-    public function getDuration() {
+    public function getDuration()
+    {
         return $this->interval;
+    }
+
+    public function getDurationComponents()
+    {
+
+        $duration = $this->getDuration();
+
+        $components = array(
+            self::DURATION_YEARS => (int)$duration->format('%' . self::DURATION_YEARS),
+            self::DURATION_MONTHS => (int)$duration->format('%' . self::DURATION_MONTHS),
+            self::DURATION_DAYS => (int)$duration->format('%' . self::DURATION_DAYS),
+            self::DURATION_HOURS => (int)$duration->format('%' . self::DURATION_HOURS),
+            self::DURATION_MINUTES => (int)$duration->format('%' . self::DURATION_MINUTES),
+            self::DURATION_SECONDS => (int)$duration->format('%' . self::DURATION_SECONDS)
+        );
+
+        return $components;
     }
 
     /**
@@ -91,7 +127,8 @@ class PDateRange {
      * @return bool
      * @throws \Exception
      */
-    public function isDateInRange($date) {
+    public function isDateInRange($date)
+    {
 
         $result = false;
 
@@ -108,7 +145,7 @@ class PDateRange {
         }
 
         return $result;
-
     }
+
 
 }
