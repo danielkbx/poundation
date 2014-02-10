@@ -343,6 +343,22 @@ class PString extends PObject
 		return PString::createFromString(str_replace($needle, $replacement, $this->_string));
 	}
 
+    /**
+     * Replaces all occurences of characters in a set with a replacement.
+     * @param $set
+     * @param $replacement
+     * @return \Poundation\PString
+     */
+    public function replaceFromCharacterset($set, $replacement) {
+        $string = new self($this);
+        if ($set instanceof PCharacterSet) {
+            foreach($set->set() as $character) {
+              $string = $string->replace($character, $replacement);
+            };
+        }
+        return $string;
+    }
+
 	/**
 	 * Removes the trailing characters if they match the given the string.
 	 *

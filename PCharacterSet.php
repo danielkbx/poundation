@@ -42,10 +42,22 @@ class PCharacterSet extends PObject {
 		$set->addCharacter("\x0B");
 		return $set;
 	}
+
+    /**
+     * Creates a new character set with all characters from the given string.
+     * @param $string
+     * @return PCharacterSet
+     */
+    static function characterSetWithCharactersFromString($string) {
+        $set = new self();
+        $set->addCharactersFromString($string);
+        return $set;
+    }
 	
 	/**
 	 * Adds a single character to the character set.
 	 * @param string $char
+     * @return $this
 	 * @throws \Exception
 	 */
 	function addCharacter($char) {
@@ -68,16 +80,18 @@ class PCharacterSet extends PObject {
 		} else {
 			$this->_characters->add($string);
 		}
+        return $this;
 	}
 	
 	/**
 	 * Adds all characters in a string to the character set.
 	 * @param string $string
+     * @return $this
 	 * @throws \Exception
 	 */
 	function addCharactersFromString($string) {
 		if (is_string($string)) {
-			$characters = PString::stringWithString($string);
+			$characters = PString::createFromString($string);
 		} else if (is_object($string)) {
 			if ($string instanceof PString) {
 				$characters = $string;
@@ -95,7 +109,16 @@ class PCharacterSet extends PObject {
 				$_this->addCharacter($char);
 			});		
 		}
+        return $this;
 	}
+
+    /**
+     * Returns the set of characters.
+     * @return PSet
+     */
+    function set() {
+        return PSet::create($this->_characters);
+    }
 }
 
 ?>
