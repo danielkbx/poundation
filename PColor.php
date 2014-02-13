@@ -113,8 +113,15 @@ class PColor extends PObject implements \JsonSerializable
 		}
 
 		return $color;
-
 	}
+
+    /**
+     * Returns a new white color.
+     * @return PColor
+     */
+    static public function whiteColor() {
+        return new self(1.0, 1.0, 1.0, 1.0);
+    }
 
 	/**
 	 * Sets the alpha infomation of the color. An alpha value of 1.0 means full visibility while 0.0 means full transparency.
