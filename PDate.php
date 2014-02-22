@@ -344,11 +344,15 @@ class PDate extends PObject implements \JsonSerializable
 	 */
 	public function adjustTimezone($timezoneString)
 	{
+        $timezone = new \DateTimeZone($timezoneString);
+        $format = 'Y-m-d H:i:s';
+        $string = $this->data->format($format);
+        $this->data = new \DateTime($string, $timezone);
+        return true;
 
-		$timezone = new \DateTimeZone($timezoneString);
+
 		if ($timezone) {
 			$this->data->setTimezone($timezone);
-
 			return true;
 		}
 
@@ -410,9 +414,13 @@ class PDate extends PObject implements \JsonSerializable
 	 *
 	 * @return bool
 	 */
-	public function isBefore(PDate $otherDate)
+	public function isBefore(PDate $otherDate, $includeEquality = false)
 	{
-		return ($this->data < $otherDate->data);
+        if ($includeEquality) {
+            return ($this->data <= $otherDate->data);
+        } else {
+            return ($this->data < $otherDate->data);
+        }
 	}
 
 	/**
@@ -430,9 +438,13 @@ class PDate extends PObject implements \JsonSerializable
 	 *
 	 * @return bool
 	 */
-	public function isAfter(PDate $otherDate)
+	public function isAfter(PDate $otherDate, $includeEquality = false)
 	{
-		return ($this->data > $otherDate->data);
+        if ($includeEquality) {
+            return ($this->data >= $otherDate->data);
+        } else {
+            return ($this->data > $otherDate->data);
+        }
 	}
 
 	/**
