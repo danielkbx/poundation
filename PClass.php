@@ -136,6 +136,11 @@ class PClass extends PObject {
 			return call_user_func_array(array($this->_name,$methodName), $params);
 		}
 	}
+
+    function createInstance() {
+        $instance = new $this->_name;
+        return $instance;
+    }
 	
 }
 
