@@ -26,9 +26,14 @@ class PDateRange
 
     public function __construct(\DateTime $startDate, \DateTime $endDate)
     {
+        $format = 'Y-m-d H:i:s';
+        $timezone = new \DateTimeZone('UTC');
+        $calcStartDate = new \DateTime($startDate->format($format), $timezone);
+        $calcEndDate = new \DateTime($endDate->format($format), $timezone);
+        $calcDiff = $calcStartDate->diff($calcEndDate);
 
-        $this->reference = $startDate;
-        $this->interval = $this->reference->diff($endDate);
+        $this->reference = clone($startDate);
+        $this->interval = $calcDiff;
 
     }
 
