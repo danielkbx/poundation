@@ -311,6 +311,8 @@ class PURL extends PObject implements \JsonSerializable
                 if ($path->length() > 0) {
                     $pathToUse = $path;
                 }
+            } else {
+                $pathToUse = PString::createFromString((string)$path);
             }
         }
 
@@ -416,6 +418,8 @@ class PURL extends PObject implements \JsonSerializable
                 if ($value->length() > 0) {
                     $usedValue = $value->stringValue();
                 }
+            } else {
+                $usedValue = PString::createFromString((string)$value);
             }
         }
 
@@ -427,6 +431,7 @@ class PURL extends PObject implements \JsonSerializable
             throw new Exception('key and value must be of type string (PString)');
         }
 
+        return $this;
     }
 
     function __toString()
