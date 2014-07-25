@@ -489,6 +489,34 @@ class PURL extends PObject implements \JsonSerializable
         return $this->__toString();
     }
 
+    public function getContent($headers = null) {
+        $content = null;
+
+        $curl = curl_init();
+        $url =  (string)$this . '?XDEBUG_SESSION_START=14171';
+        curl_setopt($curl, CURLOPT_SSLVERSION,3);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_URL, $url);
+
+        if (is_array($headers)) {
+            $usedHeaders = [];
+            foreach($headers as $key=>$value) {
+                $usedHeaders[] = $key .': ' . $value;
+            }
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $usedHeaders);
+        }
+        try {
+            $content = curl_exec($curl);
+        } catch (\Exception $e) {
+
+        }
+        curl_close($curl);
+
+        return $content;
+    }
 }
 
 ?>
