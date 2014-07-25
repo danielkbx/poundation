@@ -493,7 +493,7 @@ class PURL extends PObject implements \JsonSerializable
         $content = null;
 
         $curl = curl_init();
-        $url =  (string)$this . '?XDEBUG_SESSION_START=14171';
+        $url =  (string)$this;
         curl_setopt($curl, CURLOPT_SSLVERSION,3);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
