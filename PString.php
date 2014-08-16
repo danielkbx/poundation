@@ -950,17 +950,12 @@ class PString extends PObject
 		return PString::createFromString($text)->trim();
 	}
 
-	public function separateSubstringBetween($startString, $endString)
-	{
+    public static function HTMLStringWithCheckMark() {
+        return new self('&#10003;');
+    }
 
-		if (strlen($startString) > 0 && strlen($endString) > 0) {
-
-			$startIndex = $this->firstAppearanceOfString($startString);
-
-		} else {
-			return null;
-		}
-
-	}
+	public static function HTMLStringWithBallotX() {
+        return new self('&#10007;');
+    }
 
 }
