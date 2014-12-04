@@ -368,4 +368,7 @@ class PMIME extends PObject
 		return $extension;
 	}
 
+	public function __toString() {
+		return $this->getMIMEType();
+	}
 }
