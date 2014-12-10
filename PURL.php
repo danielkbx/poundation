@@ -434,6 +434,16 @@ class PURL extends PObject implements \JsonSerializable
         return $this;
     }
 
+    function getParameter($key, $defaultValue = null) {
+        $param = $defaultValue;
+
+        if (isset($this->parameters[$key])) {
+            $param = $this->parameters[$key];
+        }
+
+        return $param;
+    }
+
     function __toString()
     {
 
