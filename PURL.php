@@ -76,7 +76,7 @@ class PURL extends PObject implements \JsonSerializable
     {
 
         $URL = new self($_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"]);
-        $URL->setScheme(($_SERVER["HTTPS"] == "on") ? self::SCHEME_HTTPS : self::SCHEME_HTTP);
+        $URL->setScheme(isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] == "on") ? self::SCHEME_HTTPS : self::SCHEME_HTTP);
 
         return $URL;
     }
