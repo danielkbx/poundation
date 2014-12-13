@@ -38,6 +38,9 @@ class PURL extends PObject implements \JsonSerializable
      */
     private $parameters = array();
 
+    /** @var PMailAddress  */
+    private $_mailAddress = null;
+
     /**
      * Returns a new URL object if it can be constructed.
      *
@@ -90,8 +93,18 @@ class PURL extends PObject implements \JsonSerializable
         }
 
         if ($URLString->length() > 0) {
-            if (!$URLString->hasPrefix('http')) {
-                $URLString = $URLString->prependString('http://');
+
+            if ($URLString->contains('@')) {
+                $this->_mailAddress = PMailAddress::createFromString($URLString->removeLeadingCharactersWhenMatching('mailto:'));
+            }
+
+            if (is_null($this->_mailAddress)) {
+                if (!$URLString->hasPrefix('http')) {
+                    $URLString = $URLString->prependString('http://');
+                }
+            } else {
+                $this->fullyConstructed = true;
+                return;
             }
         }
 
@@ -186,7 +199,7 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function scheme()
     {
-        return $this->scheme;
+        return (!is_null($this->_mailAddress)) ? 'mailto' : $this->scheme;
     }
 
     /**
@@ -198,7 +211,9 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function setScheme($scheme)
     {
-        $this->scheme = new PString($scheme);
+        if (is_null($this->_mailAddress)) {
+            $this->scheme = new PString($scheme);
+        }
 
         return $this;
     }
@@ -210,7 +225,7 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function host()
     {
-        return $this->host;
+        return (!is_null($this->_mailAddress)) ? $this->_mailAddress->getHost() : $this->host;
     }
 
     /**
@@ -222,7 +237,11 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function setHost($host)
     {
-        $this->host = new PString($host);
+        if (!is_null($this->_mailAddress)) {
+            $this->_mailAddress->setHost($host);
+        } else {
+            $this->host = new PString($host);
+        }
 
         return $this;
     }
@@ -234,7 +253,7 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function port()
     {
-        return $this->port;
+        return (is_null($this->_mailAddress)) ? $this->port : 0;
     }
 
     /**
@@ -246,7 +265,9 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function setPort($port)
     {
-        $this->port = $port;
+        if (is_null($this->_mailAddress)) {
+            $this->port = $port;
+        }
 
         return $this;
     }
@@ -258,7 +279,7 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function path()
     {
-        return $this->path;
+        return (is_null($this->_mailAddress)) ? $this->path : null;
     }
 
     /**
@@ -270,7 +291,7 @@ class PURL extends PObject implements \JsonSerializable
     {
         $components = null;
 
-        if ($this->path instanceof PString) {
+        if (is_null($this->_mailAddress) && $this->path instanceof PString) {
             $components = $this->path->components('/');
         }
 
@@ -286,7 +307,9 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function setPath($path)
     {
-        $this->path = new PString($path);
+        if (is_null($this->_mailAddress)) {
+            $this->path = new PString($path);
+        }
 
         return $this;
     }
@@ -301,6 +324,10 @@ class PURL extends PObject implements \JsonSerializable
      */
     public function addPathComponent($path, $isDirectory = false)
     {
+        if (!is_null($this->_mailAddress)) {
+            return $this;
+        }
+
         $pathToUse = false;
         if (is_string($path)) {
             if (strlen($path) > 0) {
@@ -339,7 +366,7 @@ class PURL extends PObject implements \JsonSerializable
     public function filename() {
         $filename = null;
 
-        if ($this->path instanceof PString) {
+        if (is_null($this->_mailAddress) && $this->path instanceof PString) {
             if (!$this->path->last(1)->isEqual('/')) {
                 $pathComponents = $this->pathComponents();
                 if ($pathComponents && $pathComponents->count() > 0) {
@@ -358,7 +385,7 @@ class PURL extends PObject implements \JsonSerializable
      */
     function domainComponents()
     {
-        return $this->host->components('.');
+        return __($this->host())->components('.');
     }
 
     /**
@@ -409,6 +436,10 @@ class PURL extends PObject implements \JsonSerializable
 
     function setParameter($key, $value)
     {
+        if (!is_null($this->_mailAddress)) {
+            return $this;
+        }
+
         $usedKey   = false;
         $usedValue = false;
 
@@ -461,6 +492,9 @@ class PURL extends PObject implements \JsonSerializable
 
     function __toString()
     {
+        if (!is_null($this->_mailAddress)) {
+            return 'mailto:' . (string)$this->_mailAddress;
+        }
 
         $url = PString::createFromString($this->scheme())->addString('://');
         $url->addString($this->host());
@@ -517,6 +551,10 @@ class PURL extends PObject implements \JsonSerializable
     public function getContent($headers = null) {
         $content = null;
 
+        if (!is_null($this->_mailAddress)) {
+            return $content;
+        }
+
         $curl = curl_init();
         $url =  (string)$this;
         curl_setopt($curl, CURLOPT_SSLVERSION,3);
@@ -541,6 +579,13 @@ class PURL extends PObject implements \JsonSerializable
         curl_close($curl);
 
         return $content;
+    }
+
+    /**
+     * @return null|PMailAddress
+     */
+    public function getMailAddress() {
+        return $this->_mailAddress;
     }
 }
 
