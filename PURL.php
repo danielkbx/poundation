@@ -336,6 +336,21 @@ class PURL extends PObject implements \JsonSerializable
         return $this;
     }
 
+    public function filename() {
+        $filename = null;
+
+        if ($this->path instanceof PString) {
+            if (!$this->path->last(1)->isEqual('/')) {
+                $pathComponents = $this->pathComponents();
+                if ($pathComponents && $pathComponents->count() > 0) {
+                    $filename = $pathComponents->lastObject();
+                }
+            }
+        }
+
+        return $filename;
+    }
+
     /**
      * Returns a list of components of the URL.
      *

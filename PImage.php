@@ -152,7 +152,7 @@ class PImage extends PObject
 	 * Creates an image from a given URL
 	 *
 	 * @param PURL   $url
-	 * @param string $filename If a filename is given it is used for MIME checks and as the image's filename.
+	 * @param string $filename If a filename is given it is used as the image's filename.
 	 */
 	static public function createImageFromURL(\Poundation\PURL $url, $filename = null)
 	{
@@ -179,6 +179,10 @@ class PImage extends PObject
 
 				if ($statusCode == 200) {
 					$image = self::createImageFromFilename($tmpName);
+
+					if (strlen($filename) > 0) {
+						$image->setName($filename);
+					}
 				} else {
 					throw new \Exception('Received HTTP status ' . $statusCode);
 				}
