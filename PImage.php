@@ -348,7 +348,7 @@ class PImage extends PObject
 	 *
 	 * @return bool
 	 */
-	public function resize($newWidth, $newHeight, $option = self::RESIZE_AUTO)
+	public function resize($newWidth, $newHeight, $option = self::RESIZE_AUTO, $focalX = -1.0, $focalY = -1.0)
 	{
 
 		// Get optimal width and height - based on $option
@@ -368,7 +368,7 @@ class PImage extends PObject
 		// if option is 'crop', then crop too
 		if ($option == self::RESIZE_CROP) {
 			if ($newWidth != $optimalWidth || $newHeight != $optimalHeight) {
-				$this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight);
+				$this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight, $focalX, $focalY);
 			}
 		}
 
@@ -380,11 +380,34 @@ class PImage extends PObject
 		return $success;
 	}
 
-	private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight)
+	private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight, $focalX = -1.0, $focalY = -1.0)
 	{
 		// Find center - this will be used for the crop
 		$cropStartX = ($optimalWidth / 2) - ($newWidth / 2);
 		$cropStartY = ($optimalHeight / 2) - ($newHeight / 2);
+
+		if ($focalX >= 0.0) {
+			$cropStartX = ($optimalWidth * $focalX) - ($newWidth / 2);
+			if ($cropStartX < 0.0) {
+				$cropStartX = 0.0;
+			}
+			if ($cropStartX + $newWidth > $optimalWidth) {
+				$cropStartX = $optimalWidth - $newWidth;
+			}
+		}
+		if ($focalY >= 0.0) {
+			$cropStartY = ($optimalHeight * $focalY) - ($newHeight / 2);
+			if ($cropStartY < 0.0) {
+				$cropStartY = 0.0;
+			}
+			if ($cropStartY + $newHeight > $optimalHeight) {
+				$cropStartY = $optimalHeight - $newHeight;
+			}
+
+		}
+
+		$cropStartX = round($cropStartX, 0);
+		$cropStartY = round($cropStartY, 0);
 
 		$crop = $this->imageResized;
 
